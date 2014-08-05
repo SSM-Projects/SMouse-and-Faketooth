@@ -29,6 +29,11 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - To be updated
 
 
+#### Unsolved Issues
+
+- To be updated
+
+
 #### Added or Modified sources list
 ##### Kernel
 ```
@@ -76,8 +81,3 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.h
 - frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp
 ```
-
-
-##### Unsolved Issues
-
-- To be updated
