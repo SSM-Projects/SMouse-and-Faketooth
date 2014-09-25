@@ -15,8 +15,8 @@ int closeDevice(int fd)
 	return close(fd);
 }
 
-int writeValues(int fd, int btn, int wheel, int moveX, int moveY)
+int writeValues(int fd, int button, int Vscroll, int deltaX, int deltaY)
 {
-	struct smouse buf = { btn, wheel, moveX, moveY };
+	struct smouse buf = { button, Vscroll, deltaX, deltaY };
 	return write(fd, &buf, sizeof(buf));
 }
