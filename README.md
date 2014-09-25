@@ -35,7 +35,7 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - To be updated
 
 
-#### Added or Modified sources list
+#### Added or Modified android sources list
 ##### 01-Frameworks/
 ```
 - out/target/product/hammerhead/system/lib/libsmouse.so
@@ -94,16 +94,4 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - drivers/usb/gadget/f_faketooth_mouse.c
 - drivers/usb/gadget/f_faketooth_keyboard.c
 - drivers/usb/gadget/f_faketooth_audio.c
-```
-
-
-##### 03-Library/
-```
-- All sources
-```
-
-
-##### 04-Windows/
-```
-- All sources
 ```
