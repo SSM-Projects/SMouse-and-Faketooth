@@ -42,8 +42,8 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 - frameworks/base/packages/SystemUI/res/drawable-hdpi/ic_qs_mouse_on.png
 - frameworks/base/packages/SystemUI/res/drawable-hdpi/ic_qs_mouse_off.png
-- frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/policy/MouseController.java
 - frameworks/base/packages/SystemUI/res/values/strings.xml
+- frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/policy/MouseController.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettings.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettingsModel.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
@@ -63,9 +63,12 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - frameworks/base/services/java/com/android/server/display/LocalDisplayAdapter.java
 - frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
 - frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
-- frameworks/base/services/jni/com_android_server_power_PowerManagerService.cpp
+- frameworks/base/services/java/com/android/server/input/InputManagerService.java
 - frameworks/base/services/jni/com_android_server_power_PowerManagerService.h
+- frameworks/base/services/jni/com_android_server_power_PowerManagerService.cpp
 - frameworks/base/services/jni/com_android_server_input_InputManagerService.cpp
+- frameworks/base/services/input/InputReader.h
+- frameworks/base/services/input/InputReader.cpp
 
 - frameworks/native/include/gui/SurfaceComposerClient.h
 - frameworks/native/include/gui/ISurfaceComposer.h
@@ -80,7 +83,9 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSelectHostFragment.java
 - packages/apps/Settings/res/values/strings.xml
 - packages/apps/Settings/res/values/arrays.xml
+
 ```
+
 
 ##### 02-Kernel/
 ```
@@ -91,10 +96,12 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - drivers/usb/gadget/f_faketooth_audio.c
 ```
 
+
 ##### 03-Library/
 ```
 - All sources
 ```
+
 
 ##### 04-Windows/
 ```
