@@ -2,10 +2,10 @@
 #define _SMOUSE_IO_H_
 
 struct smouse {
-	int btn;
-	int wheel;
-	int moveX;
-	int moveY;
+	int button;
+	int Vscroll;
+	int deltaX;
+	int deltaY;
 };
 
 int openDevice(void);
