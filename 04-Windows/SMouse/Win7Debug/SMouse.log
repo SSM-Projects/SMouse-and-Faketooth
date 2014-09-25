@@ -1,0 +1,17 @@
+﻿빌드 시작: 2014-08-05 오전 9:15:06
+     1>2 노드의 "D:\VS\SMouse\SMouse\SMouse.vcxproj" 프로젝트(Build 대상)입니다.
+     1>StampInf:
+         C:\Program Files\Windows Kits\8.1\bin\x86\stampinf.exe -d "*" -a "x86" -v "*" -k "1.11" -u "1.11.0" -f Win7Debug\SMouse.inf 
+         Stamping Win7Debug\SMouse.inf [Version] section with DriverVer=08/05/2014,9.15.6.133
+       Link:
+         SMouse.vcxproj -> D:\VS\SMouse\Win7Debug\SMouse.sys
+       DriverTestSign:
+         C:\Program Files\Windows Kits\8.1\bin\x86\signtool.exe sign /ph /sha1 "0B674ABAB440A0426630933630F5BC9D1E780F22" 
+         Done Adding Additional Store
+         Successfully signed: D:\VS\SMouse\Win7Debug\SMouse.sys
+         
+     1>"D:\VS\SMouse\SMouse\SMouse.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+
+빌드했습니다.
+
+경과 시간: 00:00:00.18

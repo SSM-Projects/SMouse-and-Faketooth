@@ -1,0 +1,175 @@
+﻿;
+; SPM_HidMini.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+;Class=Mouse
+;ClassGUID={4D36E96F-E325-11CE-BFC1-08002BE10318}
+Class=HIDClass
+ClassGuid={745a17a0-74d3-11d0-b6fe-00a0c90f57da}
+Provider=%SSM%
+CatalogFile=SPM_HidMini.cat
+DriverVer=0001
+
+[DestinationDirs]
+CopyFunctionDriver  = 12
+CopyFilterDriver    = 12
+
+[SourceDisksFiles]
+SPM_HidMini.sys.\.
+hidkmdf.sys     = 99
+;mouclass.sys 	= windows cd
+
+[SourceDisksNames]
+99 = %DISK_NAME%,,,""
+
+[Manufacturer]
+%SSM%=SSM
+
+[SSM]
+%SPM_HidMiniDesc%=SPM_HidMini_Inst,USB\VID_18D1&PID_4EE2&MI_02  ; Nexus 5 
+%customCollection%  = customCollection.Inst, HID_DEVICE_UP:FF00_U:0001
+
+; ------------------------------ Mouse Class Driver install sections ------------------------------
+;[mouclass_CopyFiles]
+;mouclass.sys,,,0x100
+
+;[mouclass_Service_Inst]
+;DisplayName    = %mouclass.SvcDesc%
+;ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+;StartType      = 3                  ; SERVICE_DEMAND_START
+;ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+;ServiceBinary  = %12%\mouclass.sys
+;LoadOrderGroup = Pointer Class
+
+;[mouclass_EventLog_Inst]
+;AddReg = mouclass_EventLog_AddReg
+
+;[mouclass_EventLog_AddReg]
+;HKR,,EventMessageFile,0x00020000,"%%SystemRoot%%\System32\IoLogMsg.dll;%%SystemRoot%%\System32\drivers\mouclass.sys"
+;HKR,,TypesSupported,0x00010001,7
+
+
+
+;===============================================================
+;   Install section for Win7 and later
+;   Use the inbox mshidkmdf.sys as the shim
+;===============================================================
+
+[SPM_HidMini_Inst.NT]
+CopyFiles = CopyFilterDriver
+
+[SPM_HidMini_Inst.NT.HW]
+AddReg = SPM_HidMini_Inst_Win7_Parameters.AddReg 
+
+;
+; mshidkmdf is the function driver and hidusbfx2 is the lower filter
+;
+[SPM_HidMini_Inst.NT.Services]
+AddService = SPM_HidMini,, SPM_HidMini_Service_Instx86
+AddService = mshidkmdf, 0x000001fa, mshidkmdf.AddService 
+;AddService = mouclass,, mouclass_Service_Inst, mouclass_EventLog_Inst            ; Class Driver
+
+[CopyFilterDriver]
+SPM_HidMini.sys
+
+[mshidkmdf.AddService]
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\mshidkmdf.sys
+
+[SPM_HidMini_Inst_Win7_Parameters.AddReg]
+HKR,,"LowerFilters",0x00010000,"SPM_HidMini"
+HKR,,"AllowIdleIrpInD3",0x00010001,0x1
+
+
+;===============================================================
+;   Service section (common to all OS versions)
+;===============================================================
+
+[SPM_HidMini_Service_Instx86]
+DisplayName    = %SPM_HidMini%
+ServiceType    = %SERVICE_KERNEL_DRIVER% 
+StartType      = %SERVICE_DEMAND_START% 
+ErrorControl   = %SERVICE_ERROR_IGNORE% 
+ServiceBinary  = %12%\SPM_HidMini.sys 
+
+
+;===============================================================
+;   Custom Collection install section
+; - Only a Null service is installed.
+;   SPM_Moufilter_Device
+;===============================================================
+
+[customCollection.Inst.NT]
+; NULL section
+
+[customCollection.Inst.NT.HW]
+AddReg = customCollection.Inst.AddReg.NT.HW
+
+[customCollection.Inst.AddReg.NT.HW]
+HKR,,"SelectiveSuspendEnabled",0x00000001,0x1
+
+[customCollection.Inst.NT.Services]
+AddService = ,0x00000002,   ; NULL Service
+
+
+;
+;--- SPM_HidMini_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[SPM_HidMini_Inst.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[SPM_HidMini_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 
+
+[SPM_HidMini_Inst.ntx86.Wdf]
+KmdfService =  SPM_HidMini_Inst.ntx86, CoInstaller_Install_wdfsect
+
+[SPM_HidMini_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+SSM = "SoftwareMembership"
+SPM_HidMini = "KMDF HID Minidriver for SPM Device" 
+ManufacturerName="SSM" 
+ClassName="SSMClassName"
+DiskName = "SPM_HidMini Installation Disk"
+SPM_HidMiniDesc = "SPM_HidMini_Device"
+SPM_HidMini.SVCDESC = "SPM_HidMini Service"
+mouclass.SvcDesc = "Mouse Class Driver"
+
+
+;Non-Localizable
+SERVICE_BOOT_START     = 0x0 
+SERVICE_SYSTEM_START   = 0x1 
+SERVICE_AUTO_START     = 0x2 
+SERVICE_DEMAND_START   = 0x3 
+SERVICE_DISABLED       = 0x4 
+
+SERVICE_KERNEL_DRIVER  = 0x1 
+SERVICE_ERROR_IGNORE   = 0x0 
+SERVICE_ERROR_NORMAL   = 0x1 
+SERVICE_ERROR_SEVERE   = 0x2 
+SERVICE_ERROR_CRITICAL = 0x3 
+
+REG_EXPAND_SZ          = 0x00020000 
+REG_DWORD              = 0x00010001 
+REG_MULTI_SZ           = 0x00010000
+REG_BINARY             = 0x00000001
+REG_SZ                 = 0x00000000
