@@ -1,0 +1,156 @@
+﻿;
+; FakeMouse.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=FAKETOOTH
+ClassGuid={88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider=%SSM%
+CatalogFile=FakeMouse.cat
+DriverVer=09/25/2014,15.20.52.690
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,"-10"
+
+[DestinationDirs]
+CopyFunctionDriver  = 12
+CopyFilterDriver    = 12
+
+[SourceDisksFiles]
+FakeMouse.sys.\.
+hidkmdf.sys     = 99
+
+[SourceDisksNames]
+99 = %DISK_NAME%,,,""
+
+[Manufacturer]
+%SSM%=SSM
+
+[SSM]
+%FakeMouse_Desc%=FakeMouse_Inst,USB\VID_18D1&PID_4EE2&MI_03  ; Nexus 5 
+%customCollection%  = customCollection.Inst, HID_DEVICE_UP:FF00_U:0001
+
+;===============================================================
+;   Install section for Win7 and later
+;   Use the inbox mshidkmdf.sys as the shim
+;===============================================================
+
+[FakeMouse_Inst.NT]
+CopyFiles = CopyFilterDriver
+
+[FakeMouse_Inst.NT.HW]
+AddReg = FakeMouse_Inst_Win7_Parameters.AddReg 
+
+;
+; mshidkmdf is the function driver and hidusbfx2 is the lower filter
+;
+[FakeMouse_Inst.NT.Services]
+AddService = FakeMouse,, FakeMouse_Service_Instx86
+AddService = mshidkmdf, 0x000001fa, mshidkmdf.AddService 
+
+[CopyFilterDriver]
+FakeMouse.sys
+
+[mshidkmdf.AddService]
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\mshidkmdf.sys
+
+[FakeMouse_Inst_Win7_Parameters.AddReg]
+HKR,,"LowerFilters",0x00010000,"FakeMouse"
+HKR,,"AllowIdleIrpInD3",0x00010001,0x1
+
+
+;===============================================================
+;   Service section (common to all OS versions)
+;===============================================================
+
+[FakeMouse_Service_Instx86]
+DisplayName    = %FakeMouse%
+ServiceType    = %SERVICE_KERNEL_DRIVER% 
+StartType      = %SERVICE_DEMAND_START% 
+ErrorControl   = %SERVICE_ERROR_IGNORE% 
+ServiceBinary  = %12%\FakeMouse.sys 
+
+
+;===============================================================
+;   Custom Collection install section
+; - Only a Null service is installed.
+;   FakeMouse_Moufilter_Device
+;===============================================================
+
+[customCollection.Inst.NT]
+; NULL section
+
+[customCollection.Inst.NT.HW]
+AddReg = customCollection.Inst.AddReg.NT.HW
+
+[customCollection.Inst.AddReg.NT.HW]
+HKR,,"SelectiveSuspendEnabled",0x00000001,0x1
+
+[customCollection.Inst.NT.Services]
+AddService = ,0x00000002,   ; NULL Service
+
+
+;
+;--- FakeMouse_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[FakeMouse_Inst.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[FakeMouse_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller01011.dll,WdfCoInstaller"
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller01011.dll
+
+[SourceDisksFiles]
+WdfCoInstaller01011.dll=1 
+
+[FakeMouse_Inst.ntx86.Wdf]
+KmdfService =  FakeMouse_Inst.ntx86, CoInstaller_Install_wdfsect
+
+[FakeMouse_wdfsect]
+KmdfLibraryVersion = 1.11
+
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+SSM = "SoftwareMembership"
+FakeMouse = "KMDF Mouse Driver for Faketooth_Mouse Device" 
+ManufacturerName="SSM" 
+ClassName="Faketooth"
+DiskName = "Faketooth_Mouse Installation Disk"
+FakeMouse_Desc = "Faketooth_Mouse"
+FakeMouse.SVCDESC = "Faketooth_Mouse Service"
+
+
+;Non-Localizable
+SERVICE_BOOT_START     = 0x0 
+SERVICE_SYSTEM_START   = 0x1 
+SERVICE_AUTO_START     = 0x2 
+SERVICE_DEMAND_START   = 0x3 
+SERVICE_DISABLED       = 0x4 
+
+SERVICE_KERNEL_DRIVER  = 0x1 
+SERVICE_ERROR_IGNORE   = 0x0 
+SERVICE_ERROR_NORMAL   = 0x1 
+SERVICE_ERROR_SEVERE   = 0x2 
+SERVICE_ERROR_CRITICAL = 0x3 
+
+REG_EXPAND_SZ          = 0x00020000 
+REG_DWORD              = 0x00010001 
+REG_MULTI_SZ           = 0x00010000
+REG_BINARY             = 0x00000001
+REG_SZ                 = 0x00000000

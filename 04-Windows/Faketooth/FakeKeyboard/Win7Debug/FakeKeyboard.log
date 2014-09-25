@@ -1,0 +1,17 @@
+﻿빌드 시작: 2014-09-24 오후 4:15:08
+     1>2 노드의 "D:\VS\Faketooth\FakeKeyboard\FakeKeyboard.vcxproj" 프로젝트(Build 대상)입니다.
+     1>StampInf:
+         C:\Program Files\Windows Kits\8.1\bin\x86\stampinf.exe -d "*" -a "x86" -v "*" -k "1.11" -u "1.11.0" -f Win7Debug\FakeKeyboard.inf 
+         Stamping Win7Debug\FakeKeyboard.inf [Version] section with DriverVer=09/24/2014,16.15.8.483
+       Link:
+         FakeKeyboard.vcxproj -> D:\VS\Faketooth\Win7Debug\FakeKeyboard.sys
+       DriverTestSign:
+         C:\Program Files\Windows Kits\8.1\bin\x86\signtool.exe sign /ph /sha1 "0B674ABAB440A0426630933630F5BC9D1E780F22" 
+         Done Adding Additional Store
+         Successfully signed: D:\VS\Faketooth\Win7Debug\FakeKeyboard.sys
+         
+     1>"D:\VS\Faketooth\FakeKeyboard\FakeKeyboard.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+
+빌드했습니다.
+
+경과 시간: 00:00:00.24

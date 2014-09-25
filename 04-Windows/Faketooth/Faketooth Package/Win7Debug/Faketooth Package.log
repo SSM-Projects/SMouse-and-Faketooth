@@ -1,0 +1,8 @@
+﻿빌드 시작: 2014-09-11 오전 11:33:55
+     1>2 노드의 "D:\VS\Faketooth\Faketooth Package\Faketooth Package.vcxproj" 프로젝트(Build 대상)입니다.
+     1>C:\Program Files\Windows Kits\8.1\build\WindowsDriver.common.targets(1366,5): error MSB3030: "D:\VS\Faketooth\Win7Debug\Faketooth.sys" 파일을 찾을 수 없으므로 복사할 수 없습니다.
+     1>"D:\VS\Faketooth\Faketooth Package\Faketooth Package.vcxproj" 프로젝트를 빌드했습니다(Build 대상). - 실패
+
+빌드하지 못했습니다.
+
+경과 시간: 00:00:00.54

@@ -1,0 +1,23 @@
+﻿빌드 시작: 2014-09-25 오후 3:20:52
+     1>2 노드의 "D:\VS\Faketooth\FakeMouse\FakeMouse.vcxproj" 프로젝트(Build 대상)입니다.
+     1>StampInf:
+         C:\Program Files\Windows Kits\8.1\bin\x86\stampinf.exe -d "*" -a "x86" -v "*" -k "1.11" -u "1.11.0" -f Win7Debug\FakeMouse.inf 
+         Stamping Win7Debug\FakeMouse.inf [Version] section with DriverVer=09/25/2014,15.20.52.690
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IWin7Debug\ /Zi /nologo /W4 /WX /Od /Oi /Oy- /D _X86_=1 /D i386=1 /D STD_CALL /D DEPRECATE_DDK_FUNCTIONS=1 /D MSC_NOOPT /D _WIN32_WINNT=0x0601 /D WINVER=0x0601 /D WINNT=1 /D NTDDI_VERSION=0x06010000 /D DBG=1 /D KMDF_VERSION_MAJOR=1 /D KMDF_VERSION_MINOR=11 /GF /Gm- /Zp8 /GS /Gy /fp:precise /Zc:wchar_t- /Zc:forScope- /GR- /Fo"Win7Debug\\" /Fd"Win7Debug\vc120.pdb" /Gz /wd4748 /wd4603 /wd4627 /wd4986 /wd4987 /wd4996 /FI"C:\Program Files\Windows Kits\8.1\Include\Shared\warning.h" /analyze- /errorReport:prompt /kernel -cbstring /d1import_no_registry /d2AllowCompatibleILVersions /d2Zi+ m_queue.c
+         m_queue.c
+     1>D:\VS\Faketooth\FakeMouse\m_driver.h(36): error C2374: 'FakeMouse_DRIVER' : 재정의. 여러 번 초기화했습니다.
+                 D:\VS\Faketooth\FakeMouse\m_driver.h(36) : 'FakeMouse_DRIVER' 선언을 참조하십시오.
+     1>D:\VS\Faketooth\FakeMouse\m_driver.h(46): error C2011: '_HID_MOUSE_DATA' : 'struct' 형식 재정의
+                 D:\VS\Faketooth\FakeMouse\m_driver.h(46) : '_HID_MOUSE_DATA' 선언을 참조하십시오.
+     1>D:\VS\Faketooth\FakeMouse\m_driver.h(55): error C2011: '_DEVICE_EXTENSION' : 'struct' 형식 재정의
+                 D:\VS\Faketooth\FakeMouse\m_driver.h(55) : '_DEVICE_EXTENSION' 선언을 참조하십시오.
+     1>D:\VS\Faketooth\FakeMouse\m_driver.h(93): error C2374: '_WDF_DEVICE_EXTENSION_TYPE_INFO' : 재정의. 여러 번 초기화했습니다.
+                 D:\VS\Faketooth\FakeMouse\m_driver.h(93) : '_WDF_DEVICE_EXTENSION_TYPE_INFO' 선언을 참조하십시오.
+     1>D:\VS\Faketooth\FakeMouse\m_driver.h(93): error C2084: 'WDF_POINTER_TYPE_DEVICE_EXTENSION GetDeviceContext(WDFOBJECT)' 함수에 이미 본문이 있습니다.
+                 D:\VS\Faketooth\FakeMouse\m_driver.h(93) : 'GetDeviceContext'의 이전 정의를 참조하십시오.
+     1>"D:\VS\Faketooth\FakeMouse\FakeMouse.vcxproj" 프로젝트를 빌드했습니다(Build 대상). - 실패
+
+빌드하지 못했습니다.
+
+경과 시간: 00:00:00.53
