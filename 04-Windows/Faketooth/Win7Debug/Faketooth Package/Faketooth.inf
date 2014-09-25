@@ -1,0 +1,91 @@
+﻿;
+; Faketooth.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=Faketooth.cat
+DriverVer=09/11/2014,11.33.52.503
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+Faketooth.sys  = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTx86
+
+[Standard.NTx86]
+%Faketooth.DeviceDesc%=Faketooth_Device, Root\Faketooth ; TODO: edit hw-id
+
+[Faketooth_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+Faketooth.sys
+
+;-------------- Service installation
+[Faketooth_Device.NT.Services]
+AddService = Faketooth,%SPSVCINST_ASSOCSERVICE%, Faketooth_Service_Inst
+
+; -------------- Faketooth driver install sections
+[Faketooth_Service_Inst]
+DisplayName    = %Faketooth.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\Faketooth.sys
+LoadOrderGroup = Extended Base
+
+;
+;--- Faketooth_Device Coinstaller installation ------
+;
+
+[DestinationDirs]
+Faketooth_Device_CoInstaller_CopyFiles = 11
+
+[Faketooth_Device.NT.CoInstallers]
+AddReg=Faketooth_Device_CoInstaller_AddReg
+CopyFiles=Faketooth_Device_CoInstaller_CopyFiles
+
+[Faketooth_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller01011.dll,WdfCoInstaller"
+
+[Faketooth_Device_CoInstaller_CopyFiles]
+WdfCoInstaller01011.dll
+
+[SourceDisksFiles]
+WdfCoInstaller01011.dll=1 ; make sure the number matches with SourceDisksNames
+
+[Faketooth_Device.NT.Wdf]
+KmdfService =  Faketooth, Faketooth_wdfsect
+[Faketooth_wdfsect]
+KmdfLibraryVersion = 1.11
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="" ; TODO: add ManufacturerName
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "Faketooth Installation Disk"
+Faketooth.DeviceDesc = "Faketooth Device"
+Faketooth.SVCDESC = "Faketooth Service"
