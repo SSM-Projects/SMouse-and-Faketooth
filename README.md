@@ -1,8 +1,9 @@
-# SMouse
+# SMouse & Faketooth
 
 SMouse Project, Jun-Jul, 2014.<br>
+Faketooth Project, Sep-Oct, 2014.<br>
 Samsung Software Membership, Seoul, South Korea.<br>
-Android part. Jeonghyeon Kim (kimjeongss@gmail.com)<br>
+Android part. Junghyun Kim (kimjeongss@gmail.com)<br>
 Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 
@@ -20,7 +21,7 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 - Google Nexus 5 (hammerhead)
 - Android 4.4.2 KitKat (r1, KOT49H)
-- Kernel 3.4.0
+- Android Linux Kernel 3.4.0
 - Windows 7 x86/x64
 
 
@@ -38,7 +39,9 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 ##### Kernel
 ```
 - drivers/usb/gadget/android.c
-- drivers/usb/gadget/f_mouse.c
+- drivers/usb/gadget/f_smouse.c
+- drivers/usb/gadget/f_faketooth_mouse.c
+- drivers/usb/gadget/f_faketooth_keyboard.c
 ```
 
 ##### Frameworks
