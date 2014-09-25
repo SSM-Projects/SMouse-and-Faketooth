@@ -179,6 +179,7 @@ public class InputManagerService extends IInputManager.Stub
             InputChannel fromChannel, InputChannel toChannel);
     private static native void nativeSetPointerSpeed(int ptr, int speed);
     private static native void nativeSetShowTouches(int ptr, boolean enabled);
+	private static native void nativeSetBluetoothSelectedHost(int ptr, int selectedHost);
     private static native void nativeVibrate(int ptr, int deviceId, long[] pattern,
             int repeat, int token);
     private static native void nativeCancelVibrate(int ptr, int deviceId, int token);
@@ -269,17 +270,20 @@ public class InputManagerService extends IInputManager.Stub
 
         registerPointerSpeedSettingObserver();
         registerShowTouchesSettingObserver();
+		registerBluetoothSelectedHostSettingObserver();
 
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updatePointerSpeedFromSettings();
                 updateShowTouchesFromSettings();
+				updateBluetoothSelectedHostFromSettings();
             }
         }, new IntentFilter(Intent.ACTION_USER_SWITCHED), null, mHandler);
 
         updatePointerSpeedFromSettings();
         updateShowTouchesFromSettings();
+		updateBluetoothSelectedHostFromSettings();
     }
 
     // TODO(BT) Pass in paramter for bluetooth system
@@ -1146,9 +1150,33 @@ public class InputManagerService extends IInputManager.Stub
             result = Settings.System.getIntForUser(mContext.getContentResolver(),
                     Settings.System.SHOW_TOUCHES, UserHandle.USER_CURRENT);
         } catch (SettingNotFoundException snfe) {
+
         }
         return result;
     }
+
+	// Faketooth
+	public void updateBluetoothSelectedHostFromSettings() {
+		int selectedHost = getBluetoothSelectedHostSetting();
+		nativeSetBluetoothSelectedHost(mPtr, selectedHost);
+	}
+
+	private void registerBluetoothSelectedHostSettingObserver() {
+		mContext.getContentResolver().registerContentObserver(
+				Settings.Global.getUriFor(Settings.Global.BLUETOOTH_SELECTED_HOST), true,
+				new ContentObserver(mHandler) {
+					@Override
+					public void onChange(boolean selfChange) {
+						updateBluetoothSelectedHostFromSettings();
+					}
+				}, UserHandle.USER_ALL);
+	}
+
+	private int getBluetoothSelectedHostSetting() {
+		int selectedHost = Settings.Global.getInt(mContext.getContentResolver(),
+					Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
+		return selectedHost;
+	}
 
     // Binder call
     @Override

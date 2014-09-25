@@ -71,7 +71,9 @@
 #include "f_serial.c"
 #include "f_acm.c"
 #include "f_adb.c"
-#include "f_mouse.c"
+#include "f_smouse.c"
+#include "f_faketooth_mouse.c"
+#include "f_faketooth_keyboard.c"
 #include "f_ccid.c"
 #include "f_mtp.c"
 #include "f_accessory.c"
@@ -553,60 +555,60 @@ static void adb_closed_callback(void)
 /*-------------------------------------------------------------------------*/
 /* Supported functions initialization */
 
-/* TODO Mouse */
-struct mouse_data {
+/* SMouse */
+struct smouse_data {
 	bool opened;
 	bool enabled;
 	struct android_dev *dev;
 };
 
 static int
-mouse_function_init(struct android_usb_function *f,
+smouse_function_init(struct android_usb_function *f,
 		struct usb_composite_dev *cdev)
 {
-	pr_info("**************************************************** mouse_function_init\n");
-	f->config = kzalloc(sizeof(struct mouse_data), GFP_KERNEL);
+	pr_info("**************************************************** smouse_function_init\n");
+	f->config = kzalloc(sizeof(struct smouse_data), GFP_KERNEL);
 	if (!f->config)
 		return -ENOMEM;
 
-	return mouse_setup();
+	return smouse_setup();
 }
 
-static void mouse_function_cleanup(struct android_usb_function *f)
+static void smouse_function_cleanup(struct android_usb_function *f)
 {
-	pr_info("**************************************************** mouse_function_disable\n");
-	mouse_cleanup();
+	pr_info("**************************************************** smouse_function_disable\n");
+	smouse_cleanup();
 	kfree(f->config);
 }
 
 /*
 static int
-mouse_function_bind_config(struct android_usb_function *f,
+smouse_function_bind_config(struct android_usb_function *f,
 		struct usb_configuration *c)
 {
-	pr_info("**************************************************** mouse_bind_config\n");
-	return mouse_bind_config(c);
+	pr_info("**************************************************** smouse_bind_config\n");
+	return smouse_bind_config(c);
 }
 */
 
-static void mouse_android_function_enable(struct android_usb_function *f)
+static void smouse_android_function_enable(struct android_usb_function *f)
 {
 	struct android_dev *dev = f->android_dev;
-	struct mouse_data *data = f->config;
-	pr_info("**************************************************** mouse_android_function_enable\n");
+	struct smouse_data *data = f->config;
+	pr_info("**************************************************** smouse_android_function_enable\n");
 
 	data->enabled = true;
 
-	/* Disable the gadget until mouse is ready */
+	/* Disable the gadget until smouse is ready */
 	if (!data->opened)
 		android_disable(dev);
 }
 
-static void mouse_android_function_disable(struct android_usb_function *f)
+static void smouse_android_function_disable(struct android_usb_function *f)
 {
 	struct android_dev *dev = f->android_dev;
-	struct mouse_data *data = f->config;
-	pr_info("**************************************************** mouse_android_function_disable\n");
+	struct smouse_data *data = f->config;
+	pr_info("**************************************************** smouse_android_function_disable\n");
 
 	data->enabled = false;
 
@@ -615,26 +617,26 @@ static void mouse_android_function_disable(struct android_usb_function *f)
 		android_enable(dev);
 }
 
-static struct android_usb_function mouse_function = {
-	.name		= "mouse",
-	.enable		= mouse_android_function_enable,
-	.disable	= mouse_android_function_disable,
-	.init		= mouse_function_init,
-	.cleanup	= mouse_function_cleanup,
-//	.bind_config	= mouse_function_bind_config,
+static struct android_usb_function smouse_function = {
+	.name		= "smouse",
+	.enable		= smouse_android_function_enable,
+	.disable	= smouse_android_function_disable,
+	.init		= smouse_function_init,
+	.cleanup	= smouse_function_cleanup,
+//	.bind_config	= smouse_function_bind_config,
 };
 
-static void mouse_ready_callback(void)
+static void smouse_ready_callback(void)
 {
-	struct android_dev *dev = mouse_function.android_dev;
-	struct mouse_data *data = mouse_function.config;
-	pr_info("**************************************************** mouse_ready_callback\n");
+	struct android_dev *dev = smouse_function.android_dev;
+	struct smouse_data *data = smouse_function.config;
+	pr_info("**************************************************** smouse_ready_callback\n");
 
-	/* dev is null in case MOUSE is not in the composition */
+	/* dev is null in case SMOUSE is not in the composition */
 	if (dev)
 		mutex_lock(&dev->mutex);
 
-	/* Save dev in case the mouse function will get disabled */
+	/* Save dev in case the smouse function will get disabled */
 	data->dev = dev;
 	data->opened = true;
 
@@ -645,18 +647,256 @@ static void mouse_ready_callback(void)
 		mutex_unlock(&dev->mutex);
 }
 
-static void mouse_closed_callback(void)
+static void smouse_closed_callback(void)
 {
-	struct mouse_data *data = mouse_function.config;
-	struct android_dev *dev = mouse_function.android_dev;
-	pr_info("**************************************************** mouse_closed_callback\n");
+	struct smouse_data *data = smouse_function.config;
+	struct android_dev *dev = smouse_function.android_dev;
+	pr_info("**************************************************** smouse_closed_callback\n");
 
-	/* In case new composition is without MOUSE, use saved one */
+	/* In case new composition is without SMOUSE, use saved one */
 	if (!dev)
 		dev = data->dev;
 
 	if (!dev)
-		pr_err("mouse_closed_callback: data->dev is NULL");
+		pr_err("smouse_closed_callback: data->dev is NULL");
+
+	if (dev)
+		mutex_lock(&dev->mutex);
+
+	data->opened = false;
+
+	if (data->enabled && dev)
+		android_disable(dev);
+
+	data->dev = NULL;
+
+	if (dev)
+		mutex_unlock(&dev->mutex);
+}
+
+/* Faketooth_mouse */
+struct faketooth_mouse_data {
+	bool opened;
+	bool enabled;
+	struct android_dev *dev;
+};
+
+static int
+faketooth_mouse_function_init(struct android_usb_function *f,
+		struct usb_composite_dev *cdev)
+{
+	pr_info("**************************************************** faketooth_mouse_function_init\n");
+	f->config = kzalloc(sizeof(struct faketooth_mouse_data), GFP_KERNEL);
+	if (!f->config)
+		return -ENOMEM;
+
+	return faketooth_mouse_setup();
+}
+
+static void faketooth_mouse_function_cleanup(struct android_usb_function *f)
+{
+	pr_info("**************************************************** faketooth_mouse_function_disable\n");
+	faketooth_mouse_cleanup();
+	kfree(f->config);
+}
+
+/*
+static int
+faketooth_mouse_function_bind_config(struct android_usb_function *f,
+		struct usb_configuration *c)
+{
+	pr_info("**************************************************** faketooth_mouse_bind_config\n");
+	return faketooth_mouse_bind_config(c);
+}
+*/
+
+static void faketooth_mouse_android_function_enable(struct android_usb_function *f)
+{
+	struct android_dev *dev = f->android_dev;
+	struct faketooth_mouse_data *data = f->config;
+	pr_info("**************************************************** faketooth_mouse_android_function_enable\n");
+
+	data->enabled = true;
+
+	/* Disable the gadget until faketooth_mouse is ready */
+	if (!data->opened)
+		android_disable(dev);
+}
+
+static void faketooth_mouse_android_function_disable(struct android_usb_function *f)
+{
+	struct android_dev *dev = f->android_dev;
+	struct faketooth_mouse_data *data = f->config;
+	pr_info("**************************************************** faketooth_mouse_android_function_disable\n");
+
+	data->enabled = false;
+
+	/* Balance the disable that was called in closed_callback */
+	if (!data->opened)
+		android_enable(dev);
+}
+
+static struct android_usb_function faketooth_mouse_function = {
+	.name		= "faketooth_mouse",
+	.enable		= faketooth_mouse_android_function_enable,
+	.disable	= faketooth_mouse_android_function_disable,
+	.init		= faketooth_mouse_function_init,
+	.cleanup	= faketooth_mouse_function_cleanup,
+//	.bind_config	= faketooth_mouse_function_bind_config,
+};
+
+static void faketooth_mouse_ready_callback(void)
+{
+	struct android_dev *dev = faketooth_mouse_function.android_dev;
+	struct faketooth_mouse_data *data = faketooth_mouse_function.config;
+	pr_info("**************************************************** faketooth_mouse_ready_callback\n");
+
+	/* dev is null in case FAKETOOTH_MOUSE is not in the composition */
+	if (dev)
+		mutex_lock(&dev->mutex);
+
+	/* Save dev in case the faketooth_mouse function will get disabled */
+	data->dev = dev;
+	data->opened = true;
+
+	if (data->enabled && dev)
+		android_enable(dev);
+
+	if (dev)
+		mutex_unlock(&dev->mutex);
+}
+
+static void faketooth_mouse_closed_callback(void)
+{
+	struct faketooth_mouse_data *data = faketooth_mouse_function.config;
+	struct android_dev *dev = faketooth_mouse_function.android_dev;
+	pr_info("**************************************************** faketooth_mouse_closed_callback\n");
+
+	/* In case new composition is without FAKETOOTH_MOUSE, use saved one */
+	if (!dev)
+		dev = data->dev;
+
+	if (!dev)
+		pr_err("faketooth_mouse_closed_callback: data->dev is NULL");
+
+	if (dev)
+		mutex_lock(&dev->mutex);
+
+	data->opened = false;
+
+	if (data->enabled && dev)
+		android_disable(dev);
+
+	data->dev = NULL;
+
+	if (dev)
+		mutex_unlock(&dev->mutex);
+}
+
+/* Faketooth_keyboard */
+struct faketooth_keyboard_data {
+	bool opened;
+	bool enabled;
+	struct android_dev *dev;
+};
+
+static int
+faketooth_keyboard_function_init(struct android_usb_function *f,
+		struct usb_composite_dev *cdev)
+{
+	pr_info("**************************************************** faketooth_keyboard_function_init\n");
+	f->config = kzalloc(sizeof(struct faketooth_keyboard_data), GFP_KERNEL);
+	if (!f->config)
+		return -ENOMEM;
+
+	return faketooth_keyboard_setup();
+}
+
+static void faketooth_keyboard_function_cleanup(struct android_usb_function *f)
+{
+	pr_info("**************************************************** faketooth_keyboard_function_disable\n");
+	faketooth_keyboard_cleanup();
+	kfree(f->config);
+}
+
+/*
+static int
+faketooth_keyboard_function_bind_config(struct android_usb_function *f,
+		struct usb_configuration *c)
+{
+	pr_info("**************************************************** faketooth_keyboard_bind_config\n");
+	return faketooth_keyboard_bind_config(c);
+}
+*/
+
+static void faketooth_keyboard_android_function_enable(struct android_usb_function *f)
+{
+	struct android_dev *dev = f->android_dev;
+	struct faketooth_keyboard_data *data = f->config;
+	pr_info("**************************************************** faketooth_keyboard_android_function_enable\n");
+
+	data->enabled = true;
+
+	/* Disable the gadget until faketooth_keyboard is ready */
+	if (!data->opened)
+		android_disable(dev);
+}
+
+static void faketooth_keyboard_android_function_disable(struct android_usb_function *f)
+{
+	struct android_dev *dev = f->android_dev;
+	struct faketooth_keyboard_data *data = f->config;
+	pr_info("**************************************************** faketooth_keyboard_android_function_disable\n");
+
+	data->enabled = false;
+
+	/* Balance the disable that was called in closed_callback */
+	if (!data->opened)
+		android_enable(dev);
+}
+
+static struct android_usb_function faketooth_keyboard_function = {
+	.name		= "faketooth_keyboard",
+	.enable		= faketooth_keyboard_android_function_enable,
+	.disable	= faketooth_keyboard_android_function_disable,
+	.init		= faketooth_keyboard_function_init,
+	.cleanup	= faketooth_keyboard_function_cleanup,
+//	.bind_config	= faketooth_keyboard_function_bind_config,
+};
+
+static void faketooth_keyboard_ready_callback(void)
+{
+	struct android_dev *dev = faketooth_keyboard_function.android_dev;
+	struct faketooth_keyboard_data *data = faketooth_keyboard_function.config;
+	pr_info("**************************************************** faketooth_keyboard_ready_callback\n");
+
+	/* dev is null in case FAKETOOTH_KEYBOARD is not in the composition */
+	if (dev)
+		mutex_lock(&dev->mutex);
+
+	/* Save dev in case the faketooth_keyboard function will get disabled */
+	data->dev = dev;
+	data->opened = true;
+
+	if (data->enabled && dev)
+		android_enable(dev);
+
+	if (dev)
+		mutex_unlock(&dev->mutex);
+}
+
+static void faketooth_keyboard_closed_callback(void)
+{
+	struct faketooth_keyboard_data *data = faketooth_keyboard_function.config;
+	struct android_dev *dev = faketooth_keyboard_function.android_dev;
+	pr_info("**************************************************** faketooth_keyboard_closed_callback\n");
+
+	/* In case new composition is without FAKETOOTH_KEYBOARD, use saved one */
+	if (!dev)
+		dev = data->dev;
+
+	if (!dev)
+		pr_err("faketooth_keyboard_closed_callback: data->dev is NULL");
 
 	if (dev)
 		mutex_lock(&dev->mutex);
@@ -2221,7 +2461,9 @@ static struct android_usb_function *supported_functions[] = {
 	&qdss_function,
 	&serial_function,
 	&adb_function,
-	&mouse_function,
+	&smouse_function,
+	&faketooth_mouse_function,
+	&faketooth_keyboard_function,
 	&laf_function,
 	&ccid_function,
 	&acm_function,
@@ -2359,8 +2601,14 @@ android_bind_enabled_functions(struct android_dev *dev,
 		}
 	}
 
-	// Call mouse_bind_config() explicitly 
-	mouse_bind_config(c);
+	// Call smouse_bind_config() explicitly 
+	smouse_bind_config(c);
+
+	// Call faketooth_mouse_bind_config() explicitly
+	faketooth_mouse_bind_config(c);
+
+	// Call faketooth_keyboard_bind_config() explicitly
+	faketooth_keyboard_bind_config(c);
 
 	return 0;
 }

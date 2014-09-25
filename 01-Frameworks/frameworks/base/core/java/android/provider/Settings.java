@@ -1065,6 +1065,7 @@ public final class Settings {
             MOVED_TO_SECURE_THEN_GLOBAL.add(Global.HTTP_PROXY);
 
             // these are moving directly from system to global
+			MOVED_TO_GLOBAL.add(Settings.Global.BLUETOOTH_SELECTED_HOST);
             MOVED_TO_GLOBAL.add(Settings.Global.MOUSE_MODE_ON);
             MOVED_TO_GLOBAL.add(Settings.Global.AIRPLANE_MODE_ON);
             MOVED_TO_GLOBAL.add(Settings.Global.AIRPLANE_MODE_RADIOS);
@@ -1580,6 +1581,12 @@ public final class Settings {
          * @hide
          */
         public static final int ADVANCED_SETTINGS_DEFAULT = 0;
+
+        /**
+         * @deprecated Use {@link android.provider.Settings.Global#BLUETOOTH_SELECTED_HOST} instead
+         */
+        @Deprecated
+        public static final String BLUETOOTH_SELECTED_HOST = Global.BLUETOOTH_SELECTED_HOST;
 
         /**
          * @deprecated Use {@link android.provider.Settings.Global#MOUSE_MODE_ON} instead
@@ -4618,6 +4625,11 @@ public final class Settings {
          */
         public static final String ENABLE_ACCESSIBILITY_GLOBAL_GESTURE_ENABLED =
                 "enable_accessibility_global_gesture_enabled";
+
+        /**
+         * Whether Mouse Mode is on.
+         */
+        public static final String BLUETOOTH_SELECTED_HOST = "bluetooth_selected_host";
 
         /**
          * Whether Mouse Mode is on.

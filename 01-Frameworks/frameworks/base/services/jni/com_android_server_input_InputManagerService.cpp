@@ -177,6 +177,7 @@ public:
     void setSystemUiVisibility(int32_t visibility);
     void setPointerSpeed(int32_t speed);
     void setShowTouches(bool enabled);
+	void setBluetoothSelectedHost(int selectedHost);
 
     /* --- InputReaderPolicyInterface implementation --- */
 
@@ -734,6 +735,11 @@ void NativeInputManager::setShowTouches(bool enabled) {
             InputReaderConfiguration::CHANGE_SHOW_TOUCHES);
 }
 
+// Faketooth
+void NativeInputManager::setBluetoothSelectedHost(int selectedHost) {
+    mInputManager->getReader()->setBluetoothSelectedHost(selectedHost);
+}
+
 bool NativeInputManager::isScreenOn() {
     return android_server_PowerManagerService_isScreenOn();
 }
@@ -1234,6 +1240,14 @@ static void nativeSetShowTouches(JNIEnv* env,
     im->setShowTouches(enabled);
 }
 
+// Faketooth
+static void nativeSetBluetoothSelectedHost(JNIEnv* env,
+        jclass clazz, jint ptr, jint selectedHost) {
+    NativeInputManager* im = reinterpret_cast<NativeInputManager*>(ptr);
+
+    im->setBluetoothSelectedHost(selectedHost);
+}
+
 static void nativeVibrate(JNIEnv* env,
         jclass clazz, jint ptr, jint deviceId, jlongArray patternObj,
         jint repeat, jint token) {
@@ -1339,6 +1353,8 @@ static JNINativeMethod gInputManagerMethods[] = {
             (void*) nativeSetPointerSpeed },
     { "nativeSetShowTouches", "(IZ)V",
             (void*) nativeSetShowTouches },
+    { "nativeSetBluetoothSelectedHost", "(II)V",
+            (void*) nativeSetBluetoothSelectedHost},
     { "nativeVibrate", "(II[JII)V",
             (void*) nativeVibrate },
     { "nativeCancelVibrate", "(III)V",

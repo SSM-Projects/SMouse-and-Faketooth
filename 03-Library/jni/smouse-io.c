@@ -2,8 +2,8 @@
 
 #include "smouse-io.h"
 
-#define TAG	"SMouse"
-#define PATH	"/dev/android_mouse"
+#define TAG "SMouse"
+#define PATH "/dev/smouse"
 
 int openDevice(void)
 {
