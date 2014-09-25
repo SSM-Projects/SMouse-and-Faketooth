@@ -35,7 +35,7 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - To be updated
 
 
-#### Added or Modified android sources list
+#### Added or Modified Android Sources List
 ##### 01-Frameworks/
 ```
 - out/target/product/hammerhead/system/lib/libsmouse.so
