@@ -36,16 +36,7 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 
 #### Added or Modified sources list
-##### 02-Kernel/
-```
-- drivers/usb/gadget/android.c
-- drivers/usb/gadget/f_smouse.c
-- drivers/usb/gadget/f_faketooth_mouse.c
-- drivers/usb/gadget/f_faketooth_keyboard.c
-- drivers/usb/gadget/f_faketooth_audio.c
-```
-
-##### 01-Frameworkss/
+##### 01-Frameworks/
 ```
 - out/target/product/hammerhead/system/lib/libsmouse.so
 
@@ -84,4 +75,28 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp
 - frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.h
 - frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp
+
+- packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSettings.java
+- packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSelectHostFragment.java
+- packages/apps/Settings/res/values/strings.xml
+- packages/apps/Settings/res/values/arrays.xml
+```
+
+##### 02-Kernel/
+```
+- drivers/usb/gadget/android.c
+- drivers/usb/gadget/f_smouse.c
+- drivers/usb/gadget/f_faketooth_mouse.c
+- drivers/usb/gadget/f_faketooth_keyboard.c
+- drivers/usb/gadget/f_faketooth_audio.c
+```
+
+##### 03-Library/
+```
+- All sources
+```
+
+##### 04-Windows/
+```
+- All sources
 ```
