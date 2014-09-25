@@ -735,7 +735,7 @@ void NativeInputManager::setShowTouches(bool enabled) {
             InputReaderConfiguration::CHANGE_SHOW_TOUCHES);
 }
 
-// Faketooth
+// Faketooth 
 void NativeInputManager::setBluetoothSelectedHost(int selectedHost) {
     mInputManager->getReader()->setBluetoothSelectedHost(selectedHost);
 }

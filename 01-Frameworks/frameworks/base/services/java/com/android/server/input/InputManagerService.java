@@ -1155,7 +1155,7 @@ public class InputManagerService extends IInputManager.Stub
         return result;
     }
 
-	// Faketooth
+	// Faketooth 
 	public void updateBluetoothSelectedHostFromSettings() {
 		int selectedHost = getBluetoothSelectedHostSetting();
 		nativeSetBluetoothSelectedHost(mPtr, selectedHost);
