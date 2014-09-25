@@ -36,15 +36,16 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 
 #### Added or Modified sources list
-##### Kernel
+##### 02-Kernel/
 ```
 - drivers/usb/gadget/android.c
 - drivers/usb/gadget/f_smouse.c
 - drivers/usb/gadget/f_faketooth_mouse.c
 - drivers/usb/gadget/f_faketooth_keyboard.c
+- drivers/usb/gadget/f_faketooth_audio.c
 ```
 
-##### Frameworks
+##### 01-Frameworkss/
 ```
 - out/target/product/hammerhead/system/lib/libsmouse.so
 
