@@ -2,7 +2,6 @@
 
 SMouse Project, Jun-Jul, 2014.<br>
 Faketooth Project, Sep-Oct, 2014.<br>
-Samsung Software Membership, Seoul, South Korea.<br>
 Android part. Junghyun Kim (kimjeongss@gmail.com)<br>
 Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
