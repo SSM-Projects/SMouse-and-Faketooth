@@ -324,7 +324,7 @@ public:
     virtual int32_t getSwitchState(int32_t deviceId, uint32_t sourceMask,
             int32_t sw) = 0;
 
-	/* Faketooth */
+    /* Faketooth */
     virtual int32_t getBluetoothSelectedHost() = 0;
     virtual void setBluetoothSelectedHost(int selectedHost) = 0;
 
@@ -368,7 +368,7 @@ public:
     virtual InputListenerInterface* getListener() = 0;
     virtual EventHubInterface* getEventHub() = 0;
 
-	// Faketooth
+    // Faketooth
     virtual InputReaderInterface* getReader() = 0;
 };
 
@@ -405,7 +405,7 @@ public:
     virtual int32_t getSwitchState(int32_t deviceId, uint32_t sourceMask,
             int32_t sw);
 
-	// Faketooth
+    // Faketooth
     virtual int32_t getBluetoothSelectedHost();
     virtual void setBluetoothSelectedHost(int selectedHost);
 
@@ -441,7 +441,7 @@ protected:
         virtual InputListenerInterface* getListener();
         virtual EventHubInterface* getEventHub();
 
-		// Faketooth
+        // Faketooth
         virtual InputReaderInterface* getReader();
     } mContext;
 
@@ -503,7 +503,7 @@ private:
     bool markSupportedKeyCodesLocked(int32_t deviceId, uint32_t sourceMask, size_t numCodes,
             const int32_t* keyCodes, uint8_t* outFlags);
 
-	// Faketooth
+    // Faketooth
     int32_t mBluetoothSelectedHost;
 };
 
@@ -941,8 +941,8 @@ public:
     inline InputListenerInterface* getListener() { return mContext->getListener(); }
     inline EventHubInterface* getEventHub() { return mContext->getEventHub(); }
 
-	// Faketooth
-	inline InputReaderInterface* getReader() { return mContext->getReader(); }
+    // Faketooth
+    inline InputReaderInterface* getReader() { return mContext->getReader(); }
 
     virtual uint32_t getSources() = 0;
     virtual void populateDeviceInfo(InputDeviceInfo* deviceInfo);
@@ -1091,13 +1091,13 @@ private:
     void updateLedStateForModifier(LedState& ledState, int32_t led,
             int32_t modifier, bool reset);
 
-	// Faketooth
-	int32_t mKFD;
-	struct faketooth_keyboard {
-		int32_t keyCode;
-		int32_t scanCode;
-		int32_t action;
-	};
+    // Faketooth
+    int32_t mKFD;
+    struct faketooth_keyboard {
+        int32_t keyCode;
+        int32_t scanCode;
+        int32_t action;
+    };
 };
 
 
@@ -1164,16 +1164,16 @@ private:
 
     void sync(nsecs_t when);
 	
-	// Faketooth
-	int32_t mMFD;
-	struct faketooth_mouse {
-		int32_t deltaX;
-		int32_t deltaY;
-		int32_t Vscroll;
-		int32_t Hscroll;
-		int32_t button;
-		int32_t action;
-	};
+    // Faketooth
+    int32_t mMFD;
+    struct faketooth_mouse {
+        int32_t deltaX;
+        int32_t deltaY;
+        int32_t Vscroll;
+        int32_t Hscroll;
+        int32_t button;
+        int32_t action;
+    };
 };
 
 

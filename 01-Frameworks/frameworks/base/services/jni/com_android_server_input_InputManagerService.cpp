@@ -177,7 +177,7 @@ public:
     void setSystemUiVisibility(int32_t visibility);
     void setPointerSpeed(int32_t speed);
     void setShowTouches(bool enabled);
-	void setBluetoothSelectedHost(int selectedHost); // Faketooth
+    void setBluetoothSelectedHost(int selectedHost); // Faketooth
 
     /* --- InputReaderPolicyInterface implementation --- */
 

@@ -2186,12 +2186,12 @@ void KeyboardInputMapper::processKey(nsecs_t when, bool down, int32_t keyCode,
             down ? AKEY_EVENT_ACTION_DOWN : AKEY_EVENT_ACTION_UP,
             AKEY_EVENT_FLAG_FROM_SYSTEM, keyCode, scanCode, newMetaState, downTime);
 
-	// Faketooth
+    // Faketooth
     int32_t selectedHost = getReader()->getBluetoothSelectedHost();
     if ( (mSource & (AINPUT_SOURCE_DPAD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
          (mSource & (AINPUT_SOURCE_GAMEPAD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
          (mSource & (AINPUT_SOURCE_KEYBOARD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
-          selectedHost/* Faketooth */ ) {
+          selectedHost ) {
         if (mKFD == -1)
             mKFD = open("/dev/faketooth_keyboard", O_RDWR | O_NONBLOCK);
         if (mKFD != -1) {
@@ -2497,7 +2497,7 @@ void CursorInputMapper::sync(nsecs_t when) {
 
     mPointerVelocityControl.move(when, &deltaX, &deltaY);
 
-	// Faketooth
+    // Faketooth
     int32_t selectedHost = getReader()->getBluetoothSelectedHost();
 
     int32_t displayId;
@@ -2556,7 +2556,8 @@ void CursorInputMapper::sync(nsecs_t when) {
             motionEventAction = AMOTION_EVENT_ACTION_HOVER_MOVE;
         }
 
-        if (mSource == AINPUT_SOURCE_MOUSE && selectedHost/* Faketooth */) {
+        // Faketooth
+        if (mSource == AINPUT_SOURCE_MOUSE && selectedHost) {
             if (mMFD == -1)
                 mMFD = open("/dev/faketooth_mouse", O_RDWR | O_NONBLOCK);
             if (mMFD != -1) {

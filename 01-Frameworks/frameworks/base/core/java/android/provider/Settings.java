@@ -1065,7 +1065,7 @@ public final class Settings {
             MOVED_TO_SECURE_THEN_GLOBAL.add(Global.HTTP_PROXY);
 
             // these are moving directly from system to global
-			MOVED_TO_GLOBAL.add(Settings.Global.BLUETOOTH_SELECTED_HOST);   // Faketooth
+            MOVED_TO_GLOBAL.add(Settings.Global.BLUETOOTH_SELECTED_HOST); // Faketooth
             MOVED_TO_GLOBAL.add(Settings.Global.MOUSE_MODE_ON); // SMouse
             MOVED_TO_GLOBAL.add(Settings.Global.AIRPLANE_MODE_ON);
             MOVED_TO_GLOBAL.add(Settings.Global.AIRPLANE_MODE_RADIOS);
