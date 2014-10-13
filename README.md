@@ -18,8 +18,8 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 #### Target Environment
 
-- Google Nexus 5 (hammerhead)
-- Android 4.4.2 KitKat (r1, KOT49H)
+- Google Nexus 5
+- Android 4.4.2 KitKat
 - Android Linux Kernel 3.4.0
 - Windows 7 x86/x64
 
@@ -37,22 +37,31 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 #### Added or Modified Android Sources List
 ##### 01-Frameworks/
 ```
-- out/target/product/hammerhead/system/lib/libsmouse.so
++ out/target/product/hammerhead/system/lib/libsmouse.so
 
-- frameworks/base/packages/SystemUI/res/drawable-hdpi/ic_qs_mouse_on.png
-- frameworks/base/packages/SystemUI/res/drawable-hdpi/ic_qs_mouse_off.png
+- packages/apps/Settings/res/values/strings.xml
+- packages/apps/Settings/res/values/arrays.xml
+- packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSettings.java
++ packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSelectHostFragment.java
+
++ frameworks/base/packages/SystemUI/res/drawable-hdpi/ic_qs_mouse_on.png
++ frameworks/base/packages/SystemUI/res/drawable-hdpi/ic_qs_mouse_off.png
 - frameworks/base/packages/SystemUI/res/values/strings.xml
-- frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/policy/MouseController.java
++ frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/policy/MouseController.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettings.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettingsModel.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/SettingsPanelView.java
 
-- frameworks/base/core/java/com/android/internal/widget/SMouseTouchView.java
++ frameworks/base/core/java/com/android/internal/widget/SMouseTouchView.java
 - frameworks/base/core/java/android/hardware/usb/UsbManager.java
 - frameworks/base/core/java/android/provider/Settings.java
 - frameworks/base/core/java/android/view/SurfaceControl.java
 - frameworks/base/core/jni/android_view_SurfaceControl.cpp
+- frameworks/base/core/jni/android_media_AudioSystem.cpp
+
+- frameworks/base/media/java/android/media/AudioService.java
+- frameworks/base/media/java/android/media/AudioSystem.java
 
 - frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
 
@@ -78,10 +87,22 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.h
 - frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp
 
-- packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSettings.java
-- packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSelectHostFragment.java
-- packages/apps/Settings/res/values/strings.xml
-- packages/apps/Settings/res/values/arrays.xml
+- frameworks/av/include/media/AudioSystem.h
+- frameworks/av/include/media/IAudioPolicyService.h
+- frameworks/av/media/libmedia/AudioSystem.cpp
+- frameworks/av/media/libmedia/IAudioPolicyService.cpp
+- frameworks/av/services/audioflinger/AudioPolicyService.h
+- frameworks/av/services/audioflinger/AudioPolicyService.cpp
+
+- hardware/libhardware/include/hardware/audio_policy.h
+- hardware/libhardware/modules/audio/audio_policy.c
+- hardware/libhardware_legacy/audio/audio_policy_hal.cpp
+- hardware/libhardware_legacy/include/hardware_legacy/AudioSystemLegacy.h
+- hardware/libhardware_legacy/include/hardware_legacy/AudioPolicyInterface.h
+- hardware/libhardware_legacy/include/hardware_legacy/AudioPolicyManagerBase.h
+- hardware/libhardware_legacy/audio/AudioPolicyManagerBase.cpp
+
+- system/core/include/system/audio.h
 
 ```
 
