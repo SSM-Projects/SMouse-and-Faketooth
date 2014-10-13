@@ -42,12 +42,12 @@ import com.android.internal.app.AlertController;
 import com.android.settings.R;
 
 /**
- * Dialog fragment for selecting host.
+ * Faketooth, Dialog fragment for selecting host. 
  */
 public final class BluetoothSelectHostFragment extends DialogFragment
         implements DialogInterface.OnClickListener {
 
-	private static int selectedHost;
+    private static int selectedHost;
 
     public BluetoothSelectHostFragment() {
 
@@ -56,8 +56,8 @@ public final class BluetoothSelectHostFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 		
-		selectedHost = Settings.Global.getInt(getActivity().getContentResolver(),
-				Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
+        selectedHost = Settings.Global.getInt(getActivity().getContentResolver(),
+            Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.bluetooth_select_host)
@@ -68,15 +68,15 @@ public final class BluetoothSelectHostFragment extends DialogFragment
 
     public void onClick(DialogInterface dialog, int which) {
 
-		if (selectedHost != which) {
-			Settings.Global.putInt(getActivity().getContentResolver(),
-					Settings.Global.BLUETOOTH_SELECTED_HOST, which);
-			if (which == 0) {
-				Log.i("BluetoothSelectHostFragment", "Faketooth Off (Phone is selected as bluetooth host)");
-			} else {
-				Log.i("BluetoothSelectHostFragment", "Faketooth On (PC is selected as bluetooth host)");
-			}
-		}
+        if (selectedHost != which) {
+            Settings.Global.putInt(getActivity().getContentResolver(),
+                Settings.Global.BLUETOOTH_SELECTED_HOST, which);
+            if (which == 0) {
+                Log.i("BluetoothSelectHostFragment", "Faketooth Off (Phone is selected as bluetooth host)");
+            } else {
+                Log.i("BluetoothSelectHostFragment", "Faketooth On (PC is selected as bluetooth host)");
+            }
+        }
         dismiss();
     }
 }

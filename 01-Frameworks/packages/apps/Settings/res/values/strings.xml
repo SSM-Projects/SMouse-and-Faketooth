@@ -370,7 +370,6 @@
 	<!-- Strings for Faketooth -->
 	<string name="bluetooth_select_host">Select Host</string>
 
-
     <!-- Date & time settings screen title -->
     <string name="date_and_time">Date &amp; time settings</string>
     <!-- The title of the activity to pick a time zone. -->

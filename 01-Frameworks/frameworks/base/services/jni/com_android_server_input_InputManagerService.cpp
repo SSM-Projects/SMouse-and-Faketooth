@@ -177,7 +177,7 @@ public:
     void setSystemUiVisibility(int32_t visibility);
     void setPointerSpeed(int32_t speed);
     void setShowTouches(bool enabled);
-	void setBluetoothSelectedHost(int selectedHost);
+	void setBluetoothSelectedHost(int selectedHost); // Faketooth
 
     /* --- InputReaderPolicyInterface implementation --- */
 
@@ -1354,7 +1354,7 @@ static JNINativeMethod gInputManagerMethods[] = {
     { "nativeSetShowTouches", "(IZ)V",
             (void*) nativeSetShowTouches },
     { "nativeSetBluetoothSelectedHost", "(II)V",
-            (void*) nativeSetBluetoothSelectedHost},
+            (void*) nativeSetBluetoothSelectedHost}, // Faketooth
     { "nativeVibrate", "(II[JII)V",
             (void*) nativeVibrate },
     { "nativeCancelVibrate", "(III)V",

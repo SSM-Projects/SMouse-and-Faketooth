@@ -325,8 +325,8 @@ public:
             int32_t sw) = 0;
 
 	/* Faketooth */
-	virtual int32_t getBluetoothSelectedHost() = 0;
-	virtual void setBluetoothSelectedHost(int selectedHost) = 0;
+    virtual int32_t getBluetoothSelectedHost() = 0;
+    virtual void setBluetoothSelectedHost(int selectedHost) = 0;
 
     /* Determine whether physical keys exist for the given framework-domain key codes. */
     virtual bool hasKeys(int32_t deviceId, uint32_t sourceMask,
@@ -369,7 +369,7 @@ public:
     virtual EventHubInterface* getEventHub() = 0;
 
 	// Faketooth
-	virtual InputReaderInterface* getReader() = 0;
+    virtual InputReaderInterface* getReader() = 0;
 };
 
 
@@ -406,8 +406,8 @@ public:
             int32_t sw);
 
 	// Faketooth
-	virtual int32_t getBluetoothSelectedHost();
-	virtual void setBluetoothSelectedHost(int selectedHost);
+    virtual int32_t getBluetoothSelectedHost();
+    virtual void setBluetoothSelectedHost(int selectedHost);
 
     virtual bool hasKeys(int32_t deviceId, uint32_t sourceMask,
             size_t numCodes, const int32_t* keyCodes, uint8_t* outFlags);
@@ -442,7 +442,7 @@ protected:
         virtual EventHubInterface* getEventHub();
 
 		// Faketooth
-		virtual InputReaderInterface* getReader();
+        virtual InputReaderInterface* getReader();
     } mContext;
 
     friend class ContextImpl;
@@ -504,7 +504,7 @@ private:
             const int32_t* keyCodes, uint8_t* outFlags);
 
 	// Faketooth
-	int32_t mBluetoothSelectedHost;
+    int32_t mBluetoothSelectedHost;
 };
 
 

@@ -227,7 +227,7 @@ InputReader::InputReader(const sp<EventHubInterface>& eventHub,
         mContext(this), mEventHub(eventHub), mPolicy(policy),
         mGlobalMetaState(0), mGeneration(1),
         mDisableVirtualKeysTimeout(LLONG_MIN), mNextTimeout(LLONG_MAX),
-        mConfigurationChangesToRefresh(0), /* Faketooth */ mBluetoothSelectedHost(0) {
+        mConfigurationChangesToRefresh(0), mBluetoothSelectedHost(0) /* Faketooth */ {
     mQueuedListener = new QueuedInputListener(listener);
 
     { // acquire lock
@@ -600,12 +600,12 @@ int32_t InputReader::getSwitchState(int32_t deviceId, uint32_t sourceMask, int32
 
 // Faketooth
 int32_t InputReader::getBluetoothSelectedHost() {
-	return mBluetoothSelectedHost;
+    return mBluetoothSelectedHost;
 }
 
+// Faketooth
 void InputReader::setBluetoothSelectedHost(int selectedHost) {
-	mBluetoothSelectedHost = selectedHost;
-		
+    mBluetoothSelectedHost = selectedHost;
 }
 
 int32_t InputReader::getStateLocked(int32_t deviceId, uint32_t sourceMask, int32_t code,
@@ -838,7 +838,7 @@ EventHubInterface* InputReader::ContextImpl::getEventHub() {
 
 // Faketooth
 InputReaderInterface* InputReader::ContextImpl::getReader() {
-	return mReader;
+    return mReader;
 }
 
 
@@ -2187,27 +2187,27 @@ void KeyboardInputMapper::processKey(nsecs_t when, bool down, int32_t keyCode,
             AKEY_EVENT_FLAG_FROM_SYSTEM, keyCode, scanCode, newMetaState, downTime);
 
 	// Faketooth
-	int32_t selectedHost = getReader()->getBluetoothSelectedHost();
-	if ( (mSource & (AINPUT_SOURCE_DPAD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
-		 (mSource & (AINPUT_SOURCE_GAMEPAD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
-		 (mSource & (AINPUT_SOURCE_KEYBOARD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
-		 selectedHost ) {
-		if (mKFD == -1)
-			mKFD = open("/dev/faketooth_keyboard", O_RDWR | O_NONBLOCK);
-		if (mKFD != -1) {
-			struct faketooth_keyboard buf = { keyCode, scanCode, (int32_t)(down ? 0 : 1) };
-			write(mKFD, &buf, sizeof(buf));
-			ALOGI("[FAKETOOTH] keyCode %d scanCode %d action %d", keyCode, scanCode, down ? 0 : 1);
-		} else {
-			ALOGE("Couldn't write to faketooth_keyboard");
-		}
-	} else {
-		if (mKFD != -1) {
-			close(mKFD);
-			mKFD = -1;
-		}
-		getListener()->notifyKey(&args);
-	}
+    int32_t selectedHost = getReader()->getBluetoothSelectedHost();
+    if ( (mSource & (AINPUT_SOURCE_DPAD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
+         (mSource & (AINPUT_SOURCE_GAMEPAD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
+         (mSource & (AINPUT_SOURCE_KEYBOARD ^ AINPUT_SOURCE_CLASS_BUTTON)) &&
+          selectedHost/* Faketooth */ ) {
+        if (mKFD == -1)
+            mKFD = open("/dev/faketooth_keyboard", O_RDWR | O_NONBLOCK);
+        if (mKFD != -1) {
+            struct faketooth_keyboard buf = { keyCode, scanCode, (int32_t)(down ? 0 : 1) };
+            write(mKFD, &buf, sizeof(buf));
+            ALOGI("[FAKETOOTH] keyCode %d scanCode %d action %d", keyCode, scanCode, down ? 0 : 1);
+        } else {
+            ALOGE("Couldn't write to faketooth_keyboard");
+        }
+    } else {
+        if (mKFD != -1) {
+            close(mKFD);
+            mKFD = -1;
+        }
+        getListener()->notifyKey(&args);
+    }
 }
 
 ssize_t KeyboardInputMapper::findKeyDown(int32_t scanCode) {
@@ -2497,11 +2497,12 @@ void CursorInputMapper::sync(nsecs_t when) {
 
     mPointerVelocityControl.move(when, &deltaX, &deltaY);
 
-	int32_t selectedHost = getReader()->getBluetoothSelectedHost();
+	// Faketooth
+    int32_t selectedHost = getReader()->getBluetoothSelectedHost();
 
     int32_t displayId;
     if ( (mPointerController != NULL) &&
-		 (mSource != AINPUT_SOURCE_MOUSE || !selectedHost) ) {
+         (mSource != AINPUT_SOURCE_MOUSE || !selectedHost /* Faketooth */) ) {
         if (moved || scrolled || buttonsChanged) {
             mPointerController->setPresentation(
                     PointerControllerInterface::PRESENTATION_POINTER);
@@ -2555,36 +2556,35 @@ void CursorInputMapper::sync(nsecs_t when) {
             motionEventAction = AMOTION_EVENT_ACTION_HOVER_MOVE;
         }
 
-		// Faketooth
-		if (mSource == AINPUT_SOURCE_MOUSE && selectedHost) {
-			if (mMFD == -1)
-				mMFD = open("/dev/faketooth_mouse", O_RDWR | O_NONBLOCK);
-			if (mMFD != -1) {
-				struct faketooth_mouse buf = { (int32_t)deltaX, (int32_t)deltaY,
-											   (int32_t)vscroll, (int32_t)hscroll,
-											   currentButtonState, motionEventAction };
-				write(mMFD, &buf, sizeof(buf));
-				ALOGI("[FAKETOOTH] deltaX %d deltaY %d Vscroll %d Hscroll %d button %d action %d",
-							(int32_t)deltaX, (int32_t)deltaY, (int32_t)vscroll, (int32_t)hscroll,
-								currentButtonState, motionEventAction);
-			} else {
-				ALOGE("Couldn't write to faketooth_mouse");
-			}
-		} else {
-			if (mMFD != -1) {
-				close(mMFD);
-				mMFD = -1;
-			}
-		}
+        if (mSource == AINPUT_SOURCE_MOUSE && selectedHost/* Faketooth */) {
+            if (mMFD == -1)
+                mMFD = open("/dev/faketooth_mouse", O_RDWR | O_NONBLOCK);
+            if (mMFD != -1) {
+                struct faketooth_mouse buf = { (int32_t)deltaX, (int32_t)deltaY,
+                                               (int32_t)vscroll, (int32_t)hscroll,
+                                               currentButtonState, motionEventAction };
+                write(mMFD, &buf, sizeof(buf));
+                ALOGI("[FAKETOOTH] deltaX %d deltaY %d Vscroll %d Hscroll %d button %d action %d",
+                                (int32_t)deltaX, (int32_t)deltaY, (int32_t)vscroll, (int32_t)hscroll,
+                                currentButtonState, motionEventAction);
+            } else {
+                ALOGE("Couldn't write to faketooth_mouse");
+            }
+        } else {
+            if (mMFD != -1) {
+                close(mMFD);
+                mMFD = -1;
+            }
+        }
 
         NotifyMotionArgs args(when, getDeviceId(), mSource, policyFlags,
                 motionEventAction, 0, metaState, currentButtonState, 0,
                 displayId, 1, &pointerProperties, &pointerCoords,
                 mXPrecision, mYPrecision, downTime);
 
-		if (mSource != AINPUT_SOURCE_MOUSE || !selectedHost) {
-        	getListener()->notifyMotion(&args);
-		}
+        if (mSource != AINPUT_SOURCE_MOUSE || !selectedHost/* Faketooth */) {
+            getListener()->notifyMotion(&args);
+        }
 
         // Send hover move after UP to tell the application that the mouse is hovering now.
         if (motionEventAction == AMOTION_EVENT_ACTION_UP
@@ -2595,9 +2595,9 @@ void CursorInputMapper::sync(nsecs_t when) {
                     displayId, 1, &pointerProperties, &pointerCoords,
                     mXPrecision, mYPrecision, downTime);
 
-			if (mSource != AINPUT_SOURCE_MOUSE || !selectedHost) {
-            	getListener()->notifyMotion(&hoverArgs);
-			}
+            if (mSource != AINPUT_SOURCE_MOUSE || !selectedHost/* Faketooth */) {
+                getListener()->notifyMotion(&hoverArgs);
+            }
         }
 
         // Send scroll events.
@@ -2611,9 +2611,9 @@ void CursorInputMapper::sync(nsecs_t when) {
                     displayId, 1, &pointerProperties, &pointerCoords,
                     mXPrecision, mYPrecision, downTime);
 
-			if (mSource != AINPUT_SOURCE_MOUSE || !selectedHost) {
-            	getListener()->notifyMotion(&scrollArgs);
-			}
+            if (mSource != AINPUT_SOURCE_MOUSE || !selectedHost/* Faketooth */) {
+                getListener()->notifyMotion(&scrollArgs);
+            }
         }
     }
 

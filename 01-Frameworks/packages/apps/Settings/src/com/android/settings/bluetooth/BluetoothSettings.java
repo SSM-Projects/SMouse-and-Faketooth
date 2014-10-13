@@ -54,7 +54,7 @@ public final class BluetoothSettings extends DeviceListPreferenceFragment {
     private static final int MENU_ID_RENAME_DEVICE = Menu.FIRST + 1;
     private static final int MENU_ID_VISIBILITY_TIMEOUT = Menu.FIRST + 2;
     private static final int MENU_ID_SHOW_RECEIVED = Menu.FIRST + 3;
-	private static final int MENU_ID_SELECT_HOST = Menu.FIRST + 4;
+    private static final int MENU_ID_SELECT_HOST = Menu.FIRST + 4; // Faketooth
 
     /* Private intent to show the list of received files */
     private static final String BTOPP_ACTION_OPEN_RECEIVED_FILES =
@@ -187,7 +187,7 @@ public final class BluetoothSettings extends DeviceListPreferenceFragment {
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         menu.add(Menu.NONE, MENU_ID_SHOW_RECEIVED, 0, R.string.bluetooth_show_received_files)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.add(Menu.NONE, MENU_ID_SELECT_HOST, 0, R.string.bluetooth_select_host)
+        menu.add(Menu.NONE, MENU_ID_SELECT_HOST, 0, R.string.bluetooth_select_host) // Faketooth
                 .setEnabled(bluetoothIsEnabled)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         super.onCreateOptionsMenu(menu, inflater);
@@ -217,10 +217,11 @@ public final class BluetoothSettings extends DeviceListPreferenceFragment {
                 getActivity().sendBroadcast(intent);
                 return true;
 
-			case MENU_ID_SELECT_HOST:
-				new BluetoothSelectHostFragment().show(
-						getFragmentManager(), "select host");
-				return true;
+            // Faketooth
+            case MENU_ID_SELECT_HOST:
+                new BluetoothSelectHostFragment().show(
+                    getFragmentManager(), "select host");
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
