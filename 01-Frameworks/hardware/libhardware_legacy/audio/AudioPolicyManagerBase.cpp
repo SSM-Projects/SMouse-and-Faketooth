@@ -2327,14 +2327,13 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
 
     // Faketooth
     audio_devices_t clone = mAvailableOutputDevices;
+    audio_devices_t mask = (AUDIO_DEVICE_OUT_ALL_A2DP | AUDIO_DEVICE_OUT_ALL_SCO);
 
-    if (mBluetoothSelectedHost && (strategy != STRATEGY_FAKETOOTH)) {
-        clone &= (!(AUDIO_DEVICE_OUT_BLUETOOTH_SCO
-                | AUDIO_DEVICE_OUT_BLUETOOTH_SCO_HEADSET
-                | AUDIO_DEVICE_OUT_BLUETOOTH_SCO_CARKIT
-                | AUDIO_DEVICE_OUT_BLUETOOTH_A2DP
-                | AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES
-                | AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_SPEAKER));
+    if ((strategy != STRATEGY_FAKETOOTH) && (mBluetoothSelectedHost == 1)) {
+        clone &= !mask;
+    }
+    if ((strategy == STRATEGY_FAKETOOTH) && ((clone & mask) == 0x0)) {
+        return (audio_devices_t)0x80000;
     }
 
     audio_devices_t mAvailableOutputDevices = clone;
