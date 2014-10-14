@@ -301,7 +301,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mTranslucentDecorEnabled = true;
 
     int mPointerLocationMode = 0; // guarded by mLock
-	int mMouseMode = 0;
+    int mMouseMode = 0; // SMouse
 
     // The last window we were told about in focusChanged.
     WindowState mFocusedWindow;
@@ -320,6 +320,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     PointerLocationPointerEventListener mPointerLocationPointerEventListener;
     PointerLocationView mPointerLocationView;
 
+    // SMouse
     private final class SMouseTouchPointerEventListener implements PointerEventListener {
         @Override
         public void onPointerEvent(MotionEvent motionEvent) {
@@ -329,8 +330,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
-	SMouseTouchPointerEventListener mSMouseTouchPointerEventListener;
-	SMouseTouchView mSMouseTouchView;
+    // SMouse
+    SMouseTouchPointerEventListener mSMouseTouchPointerEventListener;
+    SMouseTouchView mSMouseTouchView;
 
     // The current size of the screen; really; extends into the overscan area of
     // the screen and doesn't account for any system elements like the status bar.
@@ -489,8 +491,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_DISABLE_POINTER_LOCATION = 2;
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
     private static final int MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK = 4;
-	private static final int MSG_ENABLE_MOUSE_MODE = 5;
-	private static final int MSG_DISABLE_MOUSE_MODE = 6;
+    private static final int MSG_ENABLE_MOUSE_MODE = 5;     // SMouse
+    private static final int MSG_DISABLE_MOUSE_MODE = 6;    // SMouse
 
     private class PolicyHandler extends Handler {
         @Override
@@ -508,12 +510,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 case MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK:
                     dispatchMediaKeyRepeatWithWakeLock((KeyEvent)msg.obj);
                     break;
-				case MSG_ENABLE_MOUSE_MODE:
-					enableMouseMode();
-					break;
-				case MSG_DISABLE_MOUSE_MODE:
-					disableMouseMode();
-					break;
+                case MSG_ENABLE_MOUSE_MODE:     // SMouse
+                    enableMouseMode();
+                    break;
+                case MSG_DISABLE_MOUSE_MODE:    // SMouse
+                    disableMouseMode();
+                    break;
             }
         }
     }
@@ -557,9 +559,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.Secure.IMMERSIVE_MODE_CONFIRMATIONS), false, this,
                     UserHandle.USER_ALL);
-			resolver.registerContentObserver(Settings.Global.getUriFor(
-					Settings.Global.MOUSE_MODE_ON), false, this,
-					UserHandle.USER_ALL);
+            // SMouse
+            resolver.registerContentObserver(Settings.Global.getUriFor(
+                    Settings.Global.MOUSE_MODE_ON), false, this,
+                    UserHandle.USER_ALL);
+
             updateSettings();
         }
 
@@ -1186,13 +1190,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mHandler.sendEmptyMessage(pointerLocation != 0 ?
                             MSG_ENABLE_POINTER_LOCATION : MSG_DISABLE_POINTER_LOCATION);
                 }
-				int mouseMode = Settings.Global.getInt(resolver,
-						Settings.Global.MOUSE_MODE_ON, 0);
-				if (mMouseMode != mouseMode) {
-					mMouseMode = mouseMode;
-					mHandler.sendEmptyMessage(mouseMode != 0 ?
-							MSG_ENABLE_MOUSE_MODE : MSG_DISABLE_MOUSE_MODE);
-				}
+
+                // SMouse
+                int mouseMode = Settings.Global.getInt(resolver,
+                        Settings.Global.MOUSE_MODE_ON, 0);
+                if (mMouseMode != mouseMode) {
+                    mMouseMode = mouseMode;
+                    mHandler.sendEmptyMessage(mouseMode != 0 ?
+                            MSG_ENABLE_MOUSE_MODE : MSG_DISABLE_MOUSE_MODE);
+                }
             }
             // use screen off timeout setting as the timeout for the lockscreen
             mLockScreenTimeout = Settings.System.getIntForUser(resolver,
@@ -1258,8 +1264,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
-	private void enableMouseMode() {
-		Log.i(TAG, "Enabling SMouse");
+    // SMouse
+    private void enableMouseMode() {
+        Log.i(TAG, "Enabling SMouse");
 
         if (mSMouseTouchView == null) {
             mSMouseTouchView = new SMouseTouchView(mContext);
@@ -1287,25 +1294,24 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mSMouseTouchPointerEventListener = new SMouseTouchPointerEventListener();
             mWindowManagerFuncs.registerPointerEventListener(mSMouseTouchPointerEventListener);
         }
-	}
+    }
 
-	private void disableMouseMode() {
-		Log.i(TAG, "Disabling SMouse");
+    // SMouse
+    private void disableMouseMode() {
+        Log.i(TAG, "Disabling SMouse");
 
         if (mSMouseTouchPointerEventListener != null) {
-            mWindowManagerFuncs.unregisterPointerEventListener(
-                    mSMouseTouchPointerEventListener);
+            mWindowManagerFuncs.unregisterPointerEventListener(mSMouseTouchPointerEventListener);
             mSMouseTouchPointerEventListener = null;
         }
 
         if (mSMouseTouchView != null) {
-			mSMouseTouchView.destroyView();
-            WindowManager wm = (WindowManager)
-                    mContext.getSystemService(Context.WINDOW_SERVICE);
+            mSMouseTouchView.destroyView();
+            WindowManager wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
             wm.removeView(mSMouseTouchView);
             mSMouseTouchView = null;
         }
-	}
+    }
 
     private int readRotation(int resID) {
         try {
