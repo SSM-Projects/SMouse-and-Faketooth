@@ -3703,6 +3703,9 @@ public class AudioService extends IAudioService.Stub {
 
     private class SettingsObserver extends ContentObserver {
 
+        // Faketooth
+        private Intent mIntent;
+
         SettingsObserver() {
             super(new Handler());
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
@@ -3745,17 +3748,23 @@ public class AudioService extends IAudioService.Stub {
         }
 
         // Faketooth
-        void enableFaketooth() {
+        public void enableFaketooth() {
             AudioSystem.setBluetoothSelectedHost(1);
-            // TODO StartService
-            Log.i(TAG, "Enable Faketooth (Enable audio system)");
+            mIntent = new Intent(mContext, FaketoothService.class);
+            if (mIntent != null) {
+                mContext.startService(mIntent);
+            }
+            Log.i(TAG, "Enabled Faketooth Audio system)");
         }
 
         // Faketooth
-        void disableFaketooth() {
+        public void disableFaketooth() {
             AudioSystem.setBluetoothSelectedHost(0);
-            // TODO StopService
-            Log.i(TAG, "Diable Faketooth (Disable audio system)");
+            if (mIntent != null) {
+                mContext.stopService(mIntent);
+                mIntent = null;
+            }
+            Log.i(TAG, "Diabled Faketooth Audio system)");
         }
     }
 
