@@ -37,7 +37,8 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 #### Added or Modified Android Sources List
 ##### 01-Frameworks/
 ```
-+ out/target/product/hammerhead/system/lib/libsmouse.so
++ external/SMouse/
++ external/Faketooth/
 
 - packages/apps/Settings/res/values/strings.xml
 - packages/apps/Settings/res/values/arrays.xml
