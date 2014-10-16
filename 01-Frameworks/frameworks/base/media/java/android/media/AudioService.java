@@ -28,6 +28,7 @@ import android.app.AppOpsManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
+import android.app.Service;
 import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
@@ -3703,9 +3704,6 @@ public class AudioService extends IAudioService.Stub {
 
     private class SettingsObserver extends ContentObserver {
 
-        // Faketooth
-        private Intent mIntent;
-
         SettingsObserver() {
             super(new Handler());
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
@@ -3746,25 +3744,28 @@ public class AudioService extends IAudioService.Stub {
                 readDockAudioSettings(mContentResolver);
             }
         }
+    }
 
-        // Faketooth
-        public void enableFaketooth() {
-            AudioSystem.setBluetoothSelectedHost(1);
-            mIntent = new Intent(mContext, FaketoothService.class);
-            if (mIntent != null) {
-                mContext.startService(mIntent);
-            }
-            Log.i(TAG, "Enabled Faketooth Audio system)");
+    // Faketooth
+    private Intent mIntent;
+
+    // Faketooth
+    private void enableFaketooth() {
+        AudioSystem.setBluetoothSelectedHost(1);
+        mIntent = new Intent(mContext, android.app.FaketoothService.class);
+        if (mIntent != null) {
+            mContext.startService(mIntent);
+            Log.i(TAG, "Enabled Faketooth Audio system");
         }
+    }
 
-        // Faketooth
-        public void disableFaketooth() {
-            AudioSystem.setBluetoothSelectedHost(0);
-            if (mIntent != null) {
-                mContext.stopService(mIntent);
-                mIntent = null;
-            }
-            Log.i(TAG, "Diabled Faketooth Audio system)");
+    // Faketooth
+    private void disableFaketooth() {
+        AudioSystem.setBluetoothSelectedHost(0);
+        if (mIntent != null) {
+            mContext.stopService(mIntent);
+            mIntent = null;
+            Log.i(TAG, "Diabled Faketooth Audio system");
         }
     }
 
