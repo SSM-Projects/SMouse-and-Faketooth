@@ -55,11 +55,13 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 - frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/SettingsPanelView.java
 
 + frameworks/base/core/java/com/android/internal/widget/SMouseTouchView.java
++ frameworks/base/core/java/android/app/FaketoothService.java
 - frameworks/base/core/java/android/hardware/usb/UsbManager.java
 - frameworks/base/core/java/android/provider/Settings.java
 - frameworks/base/core/java/android/view/SurfaceControl.java
 - frameworks/base/core/jni/android_view_SurfaceControl.cpp
 - frameworks/base/core/jni/android_media_AudioSystem.cpp
+- frameworks/base/core/res/AndroidManifest.xml
 
 - frameworks/base/media/java/android/media/AudioService.java
 - frameworks/base/media/java/android/media/AudioSystem.java
