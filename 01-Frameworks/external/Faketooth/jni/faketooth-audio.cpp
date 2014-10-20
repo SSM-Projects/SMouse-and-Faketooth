@@ -74,7 +74,7 @@ void at_release(AudioTrack* at)
         at = NULL;
 }
 
-/********************************************************************** Faketotoh Control */
+/********************************************************************** Faketooth Control */
 
 void removeWavHeader()
 {
