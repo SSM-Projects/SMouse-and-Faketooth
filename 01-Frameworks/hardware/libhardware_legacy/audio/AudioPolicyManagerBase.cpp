@@ -2330,7 +2330,7 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
     audio_devices_t mask = (AUDIO_DEVICE_OUT_ALL_A2DP | AUDIO_DEVICE_OUT_ALL_SCO);
 
     if ((strategy != STRATEGY_FAKETOOTH) && (mBluetoothSelectedHost == 1)) {
-        clone &= !mask;
+        clone &= ~mask;
     }
     if ((strategy == STRATEGY_FAKETOOTH) && ((clone & mask) == 0x0)) {
         return (audio_devices_t)0x80000;
@@ -2723,6 +2723,19 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForInputSource(int inputSource)
 {
     uint32_t device = AUDIO_DEVICE_NONE;
 
+    // Faketooth
+    audio_devices_t clone = mAvailableInputDevices;
+    audio_devices_t mask = (AUDIO_DEVICE_IN_ALL_SCO ^ AUDIO_DEVICE_BIT_IN);
+
+    if ((inputSource != AUDIO_SOURCE_FAKETOOTH) && (mBluetoothSelectedHost == 1)) {
+        clone &= ~mask;
+    }
+    if ((inputSource == AUDIO_SOURCE_FAKETOOTH) && ((clone & mask) == 0x0)) {
+        return (audio_devices_t)0x80000;
+    }
+
+    audio_devices_t mAvailableInputDevices = clone;
+
     switch (inputSource) {
     case AUDIO_SOURCE_VOICE_UPLINK:
       if (mAvailableInputDevices & AUDIO_DEVICE_IN_VOICE_CALL) {
@@ -2730,6 +2743,13 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForInputSource(int inputSource)
           break;
       }
       // FALL THROUGH
+
+    // Faketooth
+    case AUDIO_SOURCE_FAKETOOTH:
+        if (mAvailableInputDevices & AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET) {
+            device = AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET;
+        }
+        break;
 
     case AUDIO_SOURCE_DEFAULT:
     case AUDIO_SOURCE_MIC:
