@@ -17,15 +17,15 @@ public class FaketoothService extends Service {
         super.onCreate();
         int ret = nativeFaketoothEnable();
         if (ret != 0) {
-            printRetVal(ret);
-        } else {
-            mThread = new FaketoothThread();
-            if (mThread != null) {
-                mThread.start();
-                while (mThread.threadHandler == null)
-                    ;
-                mThread.threadHandler.sendEmptyMessage(0);
-            }
+            return;
+        }
+
+        mThread = new FaketoothThread();
+        if (mThread != null) {
+            mThread.start();
+            while (mThread.threadHandler == null)
+                ;
+            mThread.threadHandler.sendEmptyMessage(0);
         }
     }
 
@@ -43,35 +43,14 @@ public class FaketoothService extends Service {
         return null;
     }
 
-    public void printRetVal(int ret) {
-        String msg = "Nothing";
-
-        switch (ret) {
-            case 0: msg = "No error"; break;
-            case 1: msg = "open error"; break;
-            case 2: msg = "at_create error"; break;
-            case 3: msg = "at_set error"; break;
-            case 4: msg = "read < 0 error"; break;
-            case 5: msg = "read = 0 error"; break;
-            case 6: msg = "at_write error"; break;
-            default: msg = "Unknown " + ret; break;
-        }
-
-        Log.e(TAG, msg);
-    }
-
     class FaketoothThread extends Thread {
         public Handler threadHandler;
         public void run() {
             Looper.prepare();
             threadHandler = new Handler() {
                 public void handleMessage(Message msg) {
-                    int ret;
                     while (!(Thread.interrupted())) {
-                        ret = nativeFaketoothDo();
-                        if (ret != 0) {
-                            printRetVal(ret);
-                        }
+                        nativeFaketoothDo();
                     }
                 }
             };

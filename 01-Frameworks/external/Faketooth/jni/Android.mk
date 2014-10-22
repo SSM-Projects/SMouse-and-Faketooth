@@ -11,6 +11,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_SHARED_LIBRARIES := \
 	libutils \
-	libmedia 
+	libmedia \
+	liblog
 
 include $(BUILD_SHARED_LIBRARY)
