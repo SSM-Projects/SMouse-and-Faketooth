@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -46,7 +47,8 @@ import com.android.settings.R;
  */
 public final class BluetoothSelectHostFragment extends DialogFragment
         implements DialogInterface.OnClickListener {
-
+            
+    private static final String TAG = "BluetoothSelectHostFragment";
     private static int selectedHost;
 
     public BluetoothSelectHostFragment() {
@@ -55,7 +57,7 @@ public final class BluetoothSelectHostFragment extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-		
+
         selectedHost = Settings.Global.getInt(getActivity().getContentResolver(),
             Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
 
@@ -68,13 +70,19 @@ public final class BluetoothSelectHostFragment extends DialogFragment
 
     public void onClick(DialogInterface dialog, int which) {
 
+        UsbManager usbManager = (UsbManager)getActivity().getSystemService(Context.USB_SERVICE);
+
         if (selectedHost != which) {
             Settings.Global.putInt(getActivity().getContentResolver(),
                 Settings.Global.BLUETOOTH_SELECTED_HOST, which);
             if (which == 0) {
-                Log.i("BluetoothSelectHostFragment", "Faketooth Off (Phone is selected as bluetooth host)");
+                // TODO Undesirable way
+                usbManager.setCurrentFunction("mtp,adb,smouse", false);
+                Log.i(TAG, "Faketooth Off (Phone is selected as bluetooth host)");
             } else {
-                Log.i("BluetoothSelectHostFragment", "Faketooth On (PC is selected as bluetooth host)");
+                // TODO Undesirable way
+                usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_mouse,faketooth_keyboard", false);
+                Log.i(TAG, "Faketooth On (PC is selected as bluetooth host)");
             }
         }
         dismiss();

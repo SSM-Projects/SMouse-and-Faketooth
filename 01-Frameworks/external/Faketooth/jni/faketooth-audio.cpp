@@ -169,10 +169,6 @@ int _faketoothDo()
         LOGE("[FAKETOOTH] read() error");
         return -1;
     }
-    if (len == 0) {
-        LOGE("[FAKETOOTH] read() returned == 0");
-        return -1;
-    }
 
     ret = at_write(at, buf, len);
     if (ret < 0) {
