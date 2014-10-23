@@ -56,7 +56,6 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 + frameworks/base/core/java/com/android/internal/widget/SMouseTouchView.java
 + frameworks/base/core/java/android/app/FaketoothService.java
-- frameworks/base/core/java/android/hardware/usb/UsbManager.java
 - frameworks/base/core/java/android/provider/Settings.java
 - frameworks/base/core/java/android/view/SurfaceControl.java
 - frameworks/base/core/jni/android_view_SurfaceControl.cpp
@@ -68,7 +67,6 @@ Windows part. Youngjun Lee (tgbnhy02@gmail.com)
 
 - frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
 
-- frameworks/base/services/java/com/android/server/usb/UsbDeviceManager.java
 - frameworks/base/services/java/com/android/server/power/PowerManagerService.java
 - frameworks/base/services/java/com/android/server/power/Notifier.java
 - frameworks/base/services/java/com/android/server/display/LocalDisplayAdapter.java
