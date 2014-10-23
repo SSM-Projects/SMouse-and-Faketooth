@@ -1,3 +1,4 @@
+#include <poll.h>
 #include <fcntl.h>
 #include <android/log.h>
 #include <media/AudioTrack.h>
@@ -118,11 +119,8 @@ int _faketoothEnable()
     size_t minFrameCount;
     AudioTrack *at;
 
-    fd = open(DEVICE_PATH, O_RDONLY);
-    if (fd < 0) {
-        LOGE("[FAKETOOTH] open() error");
-        return -1;
-    }
+    while ((fd = open(DEVICE_PATH, O_RDONLY)) < 0)
+        ;
 
     flag = fcntl(fd, F_GETFL, 0);
     fcntl(fd, F_SETFL, flag | O_NONBLOCK);
@@ -134,6 +132,8 @@ int _faketoothEnable()
         return -1;
     }
 
+    /*
+    // Unused
     ret = at_getMinFrameCount(at, &minFrameCount, STREAM_TYPE, SAMPLE_RATE);
     if (ret == -1) {
         LOGE("[FAKETOOTH] at_getMinFrameCount() error");
@@ -141,6 +141,7 @@ int _faketoothEnable()
         at_release(at);
         return -1;
     }
+    */
 
     ret = at_set(at, STREAM_TYPE, SAMPLE_RATE, CHANNEL_MASK, BUFFER_SIZE);
     if (ret == -1) {
@@ -163,17 +164,23 @@ int _faketoothDo()
 
     int len, ret;
     char buf[BUFFER_SIZE];
+    struct pollfd pfd[1] = { {fd, POLLIN} };
 
-    len = read(fd, buf, BUFFER_SIZE);
-    if (len < 0) {
-        LOGE("[FAKETOOTH] read() error");
-        return -1;
+    ret = poll(pfd, 1, 5);
+    if (pfd[0].revents & POLLIN) {
+        len = read(fd, buf, BUFFER_SIZE);
+        if (len < 0) {
+            LOGE("[FAKETOOTH] read() error");
+            return -1;
+        }
     }
 
-    ret = at_write(at, buf, len);
-    if (ret < 0) {
-        LOGE("[FAKETOOTH] at_write() error");
-        return -1;
+    if (len > 0) {
+        ret = at_write(at, buf, len);
+        if (ret < 0) {
+            LOGE("[FAKETOOTH] at_write() error");
+            return -1;
+        }
     }
 
     return 0;

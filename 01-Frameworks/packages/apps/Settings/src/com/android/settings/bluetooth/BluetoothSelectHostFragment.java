@@ -81,7 +81,7 @@ public final class BluetoothSelectHostFragment extends DialogFragment
                 Log.i(TAG, "Faketooth Off (Phone is selected as bluetooth host)");
             } else {
                 // TODO Undesirable way
-                usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_mouse,faketooth_keyboard", false);
+                usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_mouse,faketooth_keyboard,faketooth_speaker", false);
                 Log.i(TAG, "Faketooth On (PC is selected as bluetooth host)");
             }
         }
