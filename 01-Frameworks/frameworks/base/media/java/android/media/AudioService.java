@@ -3785,7 +3785,7 @@ public class AudioService extends IAudioService.Stub {
                     UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
                     usbManager.setCurrentFunction("mtp,adb,smouse", false);
 
-                    Log.i(TAG, "Diabled Faketooth Audio system");
+                    Log.i(TAG, "Disabled Faketooth Audio system");
                 }
             }, 1000);
         }
