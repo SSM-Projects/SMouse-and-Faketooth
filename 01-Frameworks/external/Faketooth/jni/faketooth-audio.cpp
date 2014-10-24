@@ -6,7 +6,7 @@
 
 #define TAG "FaketoothAudioLib"
 
-#define BUFFER_SIZE  4096
+#define BUFFER_SIZE  8192
 #define SAMPLE_RATE  44100
 #define STREAM_TYPE  AUDIO_STREAM_FAKETOOTH
 #define CHANNEL_MASK AUDIO_CHANNEL_OUT_STEREO
@@ -150,6 +150,8 @@ int _faketoothDo()
 {
     AudioTrack* at = gat;
 
+    static int cnt = 0;
+
     int ret, len = 0;
     char buf[BUFFER_SIZE];
     struct pollfd pfd[1] = { {fd, POLLIN, 0} };
@@ -161,13 +163,16 @@ int _faketoothDo()
             LOGE("[FAKETOOTH] read() error %d", len);
             return -1;
         }
-    }
-
-    if (len > 0) {
-        ret = at_write(at, buf, len);
-        if (ret < 0) {
-            LOGE("[FAKETOOTH] at_write() error");
-            return -2;
+        if (len == 1 && cnt != 0) {
+            cnt = 0;
+            return 0;
+        }
+        if (len > 1 && ++cnt > 50) {
+            ret = at_write(at, buf, len);
+            if (ret < 0) {
+                LOGE("[FAKETOOTH] at_write() error");
+                return -2;
+            }
         }
     }
 
