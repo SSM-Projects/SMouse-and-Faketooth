@@ -5,6 +5,7 @@
     extern "C" {
 #endif
 
+int faketoothInit(void);        
 int faketoothEnable(void);
 int faketoothDo(void);
 int faketoothDisable(void);

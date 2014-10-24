@@ -6,7 +6,7 @@
 
 #define TAG "FaketoothAudioLib"
 
-#define BUFFER_SIZE  8192 
+#define BUFFER_SIZE  4096
 #define SAMPLE_RATE  44100
 #define STREAM_TYPE  AUDIO_STREAM_FAKETOOTH
 #define CHANNEL_MASK AUDIO_CHANNEL_OUT_STEREO
@@ -104,51 +104,39 @@ void at_flush(AudioTrack* at)
         at->flush();
 }
 
-void at_release(AudioTrack* at)
-{
-    if (at != NULL)
-        at = NULL;
-}
-
 /********************************************************************** Faketooth Control */
+
+int _faketoothInit()
+{
+    long flag;
+
+    fd = open(DEVICE_PATH, O_RDONLY);
+    if (fd < 0) {
+        // LOGE("[FAKETOOTH] open() error");
+        return -1;
+    }
+
+    flag = fcntl(fd, F_GETFL, 0);
+    fcntl(fd, F_SETFL, flag | O_NONBLOCK);
+
+    return 0;
+}
 
 int _faketoothEnable()
 {
     int ret;
-    long flag;
-    size_t minFrameCount;
     AudioTrack *at;
 
-    while ((fd = open(DEVICE_PATH, O_RDONLY)) < 0)
-        ;
-
-    flag = fcntl(fd, F_GETFL, 0);
-    fcntl(fd, F_SETFL, flag | O_NONBLOCK);
-    
     at = at_create();
     if (at == NULL) {
-        LOGE("[FAKETOOTH] at_create() error");
-        close(fd);
+        // LOGE("[FAKETOOTH] at_create() error");
         return -1;
     }
-
-    /*
-    // Unused
-    ret = at_getMinFrameCount(at, &minFrameCount, STREAM_TYPE, SAMPLE_RATE);
-    if (ret == -1) {
-        LOGE("[FAKETOOTH] at_getMinFrameCount() error");
-        close(fd);
-        at_release(at);
-        return -1;
-    }
-    */
 
     ret = at_set(at, STREAM_TYPE, SAMPLE_RATE, CHANNEL_MASK, BUFFER_SIZE);
     if (ret == -1) {
-        LOGE("[FAKETOOTH] at_set() error");
-        close(fd);
-        at_release(at);
-        return -1;
+        // LOGE("[FAKETOOTH] at_set() error");
+        return -2;
     }
 
     gat = at;
@@ -162,15 +150,15 @@ int _faketoothDo()
 {
     AudioTrack* at = gat;
 
-    int len, ret;
+    int ret, len = 0;
     char buf[BUFFER_SIZE];
-    struct pollfd pfd[1] = { {fd, POLLIN} };
+    struct pollfd pfd[1] = { {fd, POLLIN, 0} };
 
     ret = poll(pfd, 1, 5);
     if (pfd[0].revents & POLLIN) {
         len = read(fd, buf, BUFFER_SIZE);
         if (len < 0) {
-            LOGE("[FAKETOOTH] read() error");
+            // LOGE("[FAKETOOTH] read() error");
             return -1;
         }
     }
@@ -178,8 +166,8 @@ int _faketoothDo()
     if (len > 0) {
         ret = at_write(at, buf, len);
         if (ret < 0) {
-            LOGE("[FAKETOOTH] at_write() error");
-            return -1;
+            // LOGE("[FAKETOOTH] at_write() error");
+            return -2;
         }
     }
 
@@ -197,7 +185,8 @@ int _faketoothDisable()
 
     if (at != NULL) {
         at_stop(at);
-        at_release(at);
+        at = NULL;
+        gat = NULL;
     }
 
     return 0;
@@ -206,6 +195,11 @@ int _faketoothDisable()
 }
 
 /********************************************************************** Bridge */
+
+int faketoothInit()
+{
+    return android::_faketoothInit();
+}
 
 int faketoothEnable()
 {

@@ -15,11 +15,6 @@ public class FaketoothService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        int ret = nativeFaketoothEnable();
-        if (ret != 0) {
-            return;
-        }
-
         mThread = new FaketoothThread();
         if (mThread != null) {
             mThread.start();
@@ -50,7 +45,18 @@ public class FaketoothService extends Service {
             threadHandler = new Handler() {
                 public void handleMessage(Message msg) {
                     while (!(Thread.interrupted())) {
-                        nativeFaketoothDo();
+                        while (nativeFaketoothInit() < 0) {
+                            try { Thread.sleep(100); }
+                            catch (InterruptedException e) {}
+                        }
+                        while (nativeFaketoothEnable() < 0) {
+                            try { Thread.sleep(100); }
+                            catch (InterruptedException e) {}
+                        }
+                        while (nativeFaketoothDo() == 0) {
+
+                        }
+                        nativeFaketoothDisable();
                     }
                 }
             };
@@ -62,6 +68,7 @@ public class FaketoothService extends Service {
         System.loadLibrary("faketooth");
     }
 
+    private native int nativeFaketoothInit();
     private native int nativeFaketoothEnable();
     private native int nativeFaketoothDo();
     private native int nativeFaketoothDisable();
