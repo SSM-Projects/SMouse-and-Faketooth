@@ -112,7 +112,7 @@ int _faketoothInit()
 
     fd = open(DEVICE_PATH, O_RDONLY);
     if (fd < 0) {
-        // LOGE("[FAKETOOTH] open() error");
+        LOGE("[FAKETOOTH] open() error");
         return -1;
     }
 
@@ -129,13 +129,13 @@ int _faketoothEnable()
 
     at = at_create();
     if (at == NULL) {
-        // LOGE("[FAKETOOTH] at_create() error");
+        LOGE("[FAKETOOTH] at_create() error");
         return -1;
     }
 
     ret = at_set(at, STREAM_TYPE, SAMPLE_RATE, CHANNEL_MASK, BUFFER_SIZE);
     if (ret == -1) {
-        // LOGE("[FAKETOOTH] at_set() error");
+        LOGE("[FAKETOOTH] at_set() error");
         return -2;
     }
 
@@ -158,7 +158,7 @@ int _faketoothDo()
     if (pfd[0].revents & POLLIN) {
         len = read(fd, buf, BUFFER_SIZE);
         if (len < 0) {
-            // LOGE("[FAKETOOTH] read() error");
+            LOGE("[FAKETOOTH] read() error %d", len);
             return -1;
         }
     }
@@ -166,7 +166,7 @@ int _faketoothDo()
     if (len > 0) {
         ret = at_write(at, buf, len);
         if (ret < 0) {
-            // LOGE("[FAKETOOTH] at_write() error");
+            LOGE("[FAKETOOTH] at_write() error");
             return -2;
         }
     }

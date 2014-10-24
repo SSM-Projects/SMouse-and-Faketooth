@@ -47,6 +47,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.ContentObserver;
+import android.hardware.usb.UsbManager;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.net.Uri;
@@ -3752,20 +3753,41 @@ public class AudioService extends IAudioService.Stub {
     // Faketooth
     private void enableFaketooth() {
         AudioSystem.setBluetoothSelectedHost(1);
-        mIntent = new Intent(mContext, android.app.FaketoothService.class);
-        if (mIntent != null) {
-            mContext.startService(mIntent);
-            Log.i(TAG, "Enabled Faketooth Audio system");
-        }
+
+        // Undesirable way
+        UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
+        usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_mouse,faketooth_keyboard,faketooth_speaker", false);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mIntent = new Intent(mContext, android.app.FaketoothService.class);
+                if (mIntent != null)
+                    mContext.startService(mIntent);
+
+                Log.i(TAG, "Enabled Faketooth Audio system");
+            }
+        }, 1000);
     }
 
     // Faketooth
     private void disableFaketooth() {
         AudioSystem.setBluetoothSelectedHost(0);
+
         if (mIntent != null) {
             mContext.stopService(mIntent);
             mIntent = null;
-            Log.i(TAG, "Diabled Faketooth Audio system");
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Undesirable way
+                    UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
+                    usbManager.setCurrentFunction("mtp,adb,smouse", false);
+
+                    Log.i(TAG, "Diabled Faketooth Audio system");
+                }
+            }, 1000);
         }
     }
 

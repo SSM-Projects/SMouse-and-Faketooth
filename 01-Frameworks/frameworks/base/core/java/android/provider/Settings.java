@@ -4627,7 +4627,7 @@ public final class Settings {
                 "enable_accessibility_global_gesture_enabled";
 
         /**
-         * Whether Mouse Mode is on.
+         * Which device is selected as bluetooth host. 0 == Phone, 1 == PC
          */
         public static final String BLUETOOTH_SELECTED_HOST = "bluetooth_selected_host"; // Faketooth
 

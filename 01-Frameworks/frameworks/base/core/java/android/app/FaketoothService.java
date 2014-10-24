@@ -27,10 +27,8 @@ public class FaketoothService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mThread != null) {
-            mThread.interrupt();
-        }
-        nativeFaketoothDisable();
+        if (mThread != null)
+            mThread.flag = false;
     }
 
     @Override
@@ -40,20 +38,21 @@ public class FaketoothService extends Service {
 
     class FaketoothThread extends Thread {
         public Handler threadHandler;
+        public boolean flag = true;
         public void run() {
             Looper.prepare();
             threadHandler = new Handler() {
                 public void handleMessage(Message msg) {
-                    while (!(Thread.interrupted())) {
-                        while (nativeFaketoothInit() < 0) {
+                    while (flag) {
+                        while (flag && nativeFaketoothInit() < 0) {
                             try { Thread.sleep(100); }
                             catch (InterruptedException e) {}
                         }
-                        while (nativeFaketoothEnable() < 0) {
+                        while (flag && nativeFaketoothEnable() < 0) {
                             try { Thread.sleep(100); }
                             catch (InterruptedException e) {}
                         }
-                        while (nativeFaketoothDo() == 0) {
+                        while (flag && nativeFaketoothDo() == 0) {
 
                         }
                         nativeFaketoothDisable();

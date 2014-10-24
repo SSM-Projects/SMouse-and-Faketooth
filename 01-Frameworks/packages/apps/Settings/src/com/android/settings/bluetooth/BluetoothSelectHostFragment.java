@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -70,18 +69,12 @@ public final class BluetoothSelectHostFragment extends DialogFragment
 
     public void onClick(DialogInterface dialog, int which) {
 
-        UsbManager usbManager = (UsbManager)getActivity().getSystemService(Context.USB_SERVICE);
-
         if (selectedHost != which) {
             Settings.Global.putInt(getActivity().getContentResolver(),
                 Settings.Global.BLUETOOTH_SELECTED_HOST, which);
             if (which == 0) {
-                // TODO Undesirable way
-                usbManager.setCurrentFunction("mtp,adb,smouse", false);
                 Log.i(TAG, "Faketooth Off (Phone is selected as bluetooth host)");
             } else {
-                // TODO Undesirable way
-                usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_mouse,faketooth_keyboard,faketooth_speaker", false);
                 Log.i(TAG, "Faketooth On (PC is selected as bluetooth host)");
             }
         }
