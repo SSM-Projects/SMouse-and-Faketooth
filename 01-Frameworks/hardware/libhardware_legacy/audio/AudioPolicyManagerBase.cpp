@@ -2329,7 +2329,7 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
     audio_devices_t clone = mAvailableOutputDevices;
     audio_devices_t mask = (AUDIO_DEVICE_OUT_ALL_A2DP | AUDIO_DEVICE_OUT_ALL_SCO);
 
-    if ((strategy != STRATEGY_FAKETOOTH) && (mBluetoothSelectedHost == 1)) {
+    if ((strategy != STRATEGY_FAKETOOTH) && (mBluetoothSelectedHost != 0)) {
         clone &= ~mask;
     }
     if ((strategy == STRATEGY_FAKETOOTH) && ((clone & mask) == 0x0)) {
@@ -2348,13 +2348,20 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
 
     // Faketooth
     case STRATEGY_FAKETOOTH:
-        if ((device == AUDIO_DEVICE_NONE) &&
+        if ((device == AUDIO_DEVICE_NONE) && (mBluetoothSelectedHost == 1) &&
             mHasA2dp && (getA2dpOutput() != 0) && !mA2dpSuspended) {
             device = mAvailableOutputDevices & AUDIO_DEVICE_OUT_BLUETOOTH_A2DP;
             if (device == AUDIO_DEVICE_NONE)
                 device = mAvailableOutputDevices & AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES;
             if (device == AUDIO_DEVICE_NONE)
                 device = mAvailableOutputDevices & AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_SPEAKER;
+        }
+        if ((device == AUDIO_DEVICE_NONE) && (mBluetoothSelectedHost == 2)) {
+            device = mAvailableOutputDevices & AUDIO_DEVICE_OUT_BLUETOOTH_SCO_CARKIT;
+            if (device == AUDIO_DEVICE_NONE)
+                device = mAvailableOutputDevices & AUDIO_DEVICE_OUT_BLUETOOTH_SCO_HEADSET;
+            if (device == AUDIO_DEVICE_NONE)
+                device = mAvailableOutputDevices & AUDIO_DEVICE_OUT_BLUETOOTH_SCO;
         }
 
         break;

@@ -3719,10 +3719,12 @@ public class AudioService extends IAudioService.Stub {
                     public void onChange(boolean selfChange) {
                         int selectedHost = Settings.Global.getInt(mContentResolver,
                                                 Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
-                        if (selectedHost != 0)
-                            enableFaketooth();
+                        if (selectedHost == 1)
+                            enableFaketoothA2DP(selectedHost);
+                        else if (selectedHost == 2)
+                            enableFaketoothSCO(selectedHost);
                         else
-                            disableFaketooth();
+                            disableFaketooth(selectedHost);
                     }
                 }, UserHandle.USER_ALL);
         }
@@ -3751,28 +3753,70 @@ public class AudioService extends IAudioService.Stub {
     private Intent mIntent;
 
     // Faketooth
-    private void enableFaketooth() {
-        AudioSystem.setBluetoothSelectedHost(1);
+    private void enableFaketoothA2DP(int selectedHost) {
+        AudioSystem.setBluetoothSelectedHost(selectedHost);
 
-        // Undesirable way
-        UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
-        usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_mouse,faketooth_keyboard,faketooth_speaker", false);
+        if (mIntent != null) {
+            mContext.stopService(mIntent);
+            mIntent = null;
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                mIntent = new Intent(mContext, android.app.FaketoothService.class);
-                if (mIntent != null)
-                    mContext.startService(mIntent);
+                // Undesirable way
+                UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
+                usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_A2DP", false);
 
-                Log.i(TAG, "Enabled Faketooth Audio system");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIntent = new Intent(mContext, android.app.FaketoothService.class);
+                        mIntent.putExtra("BluetoothMode", "A2DP");
+                        if (mIntent != null)
+                            mContext.startService(mIntent);
+
+                        Log.i(TAG, "Enabled Faketooth A2DP Audio system");
+                    }
+                }, 1000);
             }
         }, 1000);
     }
 
     // Faketooth
-    private void disableFaketooth() {
-        AudioSystem.setBluetoothSelectedHost(0);
+    private void enableFaketoothSCO(int selectedHost) {
+        AudioSystem.setBluetoothSelectedHost(selectedHost);
+
+        if (mIntent != null) {
+            mContext.stopService(mIntent);
+            mIntent = null;
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Undesirable way
+                UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
+                usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_SCO", false);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIntent = new Intent(mContext, android.app.FaketoothService.class);
+                        mIntent.putExtra("BluetoothMode", "SCO");
+                        if (mIntent != null)
+                            mContext.startService(mIntent);
+
+                        Log.i(TAG, "Enabled Faketooth SCO Audio system");
+                    }
+                }, 1000);
+            }
+        }, 1000);
+    }
+
+    // Faketooth
+    private void disableFaketooth(int selectedHost) {
+        AudioSystem.setBluetoothSelectedHost(selectedHost);
 
         if (mIntent != null) {
             mContext.stopService(mIntent);

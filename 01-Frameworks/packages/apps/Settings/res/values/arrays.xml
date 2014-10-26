@@ -362,7 +362,8 @@
 	<!-- Faketooth, select host options -->
 	<string-array name="bluetooth_select_host_entries">
 		<item>Phone</item>
-		<item>PC</item>
+		<item>PC (A2DP)</item>
+		<item>PC (SCO)</item>
 	</string-array>
 
     <!-- Match this with drawable.wifi_signal. --> <skip />
