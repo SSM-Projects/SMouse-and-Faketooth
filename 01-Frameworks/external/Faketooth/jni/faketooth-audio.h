@@ -5,10 +5,20 @@
     extern "C" {
 #endif
 
-int faketoothInit(void);        
-int faketoothEnable(void);
-int faketoothDo(void);
-int faketoothDisable(void);
+int faketoothA2DPInit(void);        
+int faketoothA2DPEnable(void);
+int faketoothA2DPDo(void);
+int faketoothA2DPDisable(void);
+
+int faketoothSCOInit(void);        
+int faketoothSCOEnable(void);
+int faketoothSCODo(void);
+int faketoothSCODisable(void);
+
+int faketoothSCOMicInit(void);        
+int faketoothSCOMicEnable(void);
+int faketoothSCOMicDo(void);
+int faketoothSCOMicDisable(void);
 
 #ifdef __cplusplus
     }

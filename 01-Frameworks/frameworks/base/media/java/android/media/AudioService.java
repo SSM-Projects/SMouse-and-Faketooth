@@ -3764,7 +3764,7 @@ public class AudioService extends IAudioService.Stub {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Undesirable way
+                // FIXME Undesirable way
                 UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
                 usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_A2DP", false);
 
@@ -3772,7 +3772,7 @@ public class AudioService extends IAudioService.Stub {
                     @Override
                     public void run() {
                         mIntent = new Intent(mContext, android.app.FaketoothService.class);
-                        mIntent.putExtra("BluetoothMode", "A2DP");
+                        mIntent.putExtra("BluetoothProfile", "A2DP");
                         if (mIntent != null)
                             mContext.startService(mIntent);
 
@@ -3795,7 +3795,7 @@ public class AudioService extends IAudioService.Stub {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Undesirable way
+                // FIXME Undesirable way
                 UsbManager usbManager = (UsbManager)mContext.getSystemService(Context.USB_SERVICE);
                 usbManager.setCurrentFunction("mtp,adb,smouse,faketooth_SCO", false);
 
@@ -3803,7 +3803,7 @@ public class AudioService extends IAudioService.Stub {
                     @Override
                     public void run() {
                         mIntent = new Intent(mContext, android.app.FaketoothService.class);
-                        mIntent.putExtra("BluetoothMode", "SCO");
+                        mIntent.putExtra("BluetoothProfile", "SCO");
                         if (mIntent != null)
                             mContext.startService(mIntent);
 

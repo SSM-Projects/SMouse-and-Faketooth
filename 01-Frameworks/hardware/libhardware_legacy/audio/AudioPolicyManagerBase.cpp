@@ -345,7 +345,7 @@ void AudioPolicyManagerBase::setPhoneState(int state)
     if (isStateInCall(oldState) && newDevice == AUDIO_DEVICE_NONE) {
         newDevice = hwOutputDesc->device();
     }
-
+    
     int delayMs = 0;
     if (isStateInCall(state)) {
         nsecs_t sysTime = systemTime();
@@ -538,6 +538,7 @@ audio_io_handle_t AudioPolicyManagerBase::getOutput(AudioSystem::stream_type str
     uint32_t latency = 0;
     routing_strategy strategy = getStrategy((AudioSystem::stream_type)stream);
     audio_devices_t device = getDeviceForStrategy(strategy, false /*fromCache*/);
+
     ALOGV("getOutput() device %d, stream %d, samplingRate %d, format %x, channelMask %x, flags %x",
           device, stream, samplingRate, format, channelMask, flags);
 
@@ -2138,6 +2139,7 @@ void AudioPolicyManagerBase::checkOutputForStrategy(routing_strategy strategy)
                 }
             }
         }
+        
         // Move tracks associated to this strategy from previous output to new output
         for (int i = 0; i < (int)AudioSystem::NUM_STREAM_TYPES; i++) {
             if (getStrategy((AudioSystem::stream_type)i) == strategy) {
@@ -2329,7 +2331,7 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
     audio_devices_t clone = mAvailableOutputDevices;
     audio_devices_t mask = (AUDIO_DEVICE_OUT_ALL_A2DP | AUDIO_DEVICE_OUT_ALL_SCO);
 
-    if ((strategy != STRATEGY_FAKETOOTH) && (mBluetoothSelectedHost != 0)) {
+    if ((strategy != STRATEGY_FAKETOOTH) && (mBluetoothSelectedHost == 1)) {
         clone &= ~mask;
     }
     if ((strategy == STRATEGY_FAKETOOTH) && ((clone & mask) == 0x0)) {
@@ -2474,7 +2476,8 @@ audio_devices_t AudioPolicyManagerBase::getDeviceForStrategy(routing_strategy st
             }
             break;
         }
-    break;
+        
+        break;
 
     case STRATEGY_SONIFICATION:
 
@@ -3255,6 +3258,7 @@ void AudioPolicyManagerBase::handleIncallSonification(int stream, bool starting,
     // interfere with the device used for phone strategy
     // if stateChange is true, we are called from setPhoneState() and we must mute or unmute as
     // many times as there are active tracks on the output
+
     const routing_strategy stream_strategy = getStrategy((AudioSystem::stream_type)stream);
     if ((stream_strategy == STRATEGY_SONIFICATION) ||
             ((stream_strategy == STRATEGY_SONIFICATION_RESPECTFUL))) {

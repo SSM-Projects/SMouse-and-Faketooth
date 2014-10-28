@@ -49,6 +49,7 @@ public final class BluetoothSelectHostFragment extends DialogFragment
             
     private static final String TAG = "BluetoothSelectHostFragment";
     private static int selectedHost;
+    private static boolean init = false;
 
     public BluetoothSelectHostFragment() {
 
@@ -56,6 +57,12 @@ public final class BluetoothSelectHostFragment extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        if (!init) {
+            Settings.Global.putInt(getActivity().getContentResolver(),
+                Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
+            init = true;
+        }
 
         selectedHost = Settings.Global.getInt(getActivity().getContentResolver(),
             Settings.Global.BLUETOOTH_SELECTED_HOST, 0);
